@@ -4,24 +4,17 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using static NumeralSystemConverter.Converter.Constants;
 
-namespace NumeralSystemConverter
+namespace NumeralSystemConverter.Converter
 {
-    class ConverterFrom10
+    public static class ConverterFrom10
     {
-        private const int MIN_RADIX = 2;
-        private const int MAX_RADIX = 16;
-
-
-        private static char[] baseSymbols = new char[] { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F'};
-
-
-
         /// <summary>
         /// Преобразовать действительное число в другую систему счисления
         /// </summary>
         /// <param name="number">Число</param>
-        /// <param name="radix">Оснавание</param>
+        /// <param name="radix">Основание</param>
         /// <param name="roundLength">Точность преобразования дроби</param>
         /// <returns></returns>
         public static string Convert(double number, int radix, int roundLength)
@@ -43,7 +36,7 @@ namespace NumeralSystemConverter
             int wholePart = (int)Math.Floor(number);
             while (wholePart > 1)
             {
-                convertedNumber.Insert(0, ConvertDigit(wholePart % radix, radix));
+                convertedNumber.Insert(0, ConvertDigit(wholePart % radix));
                 wholePart = wholePart / radix;
             }
 
@@ -59,7 +52,7 @@ namespace NumeralSystemConverter
                     newDigit = remainderPart * radix;
                     if (remainderPart < Double.Epsilon && remainderPart > -Double.Epsilon)
                         break;
-                    convertedNumber.Append(ConvertDigit((int)Math.Floor(newDigit), radix));
+                    convertedNumber.Append(ConvertDigit((int)Math.Floor(newDigit)));
                     remainderPart = newDigit % 1;
                 }
             }
@@ -70,7 +63,7 @@ namespace NumeralSystemConverter
         /// Преобразовать целое число в другую систему счисления
         /// </summary>
         /// <param name="number">Число</param>
-        /// <param name="radix">Оснавание</param>
+        /// <param name="radix">Основание</param>
         /// <returns></returns>
         public static string Convert(int number, int radix)
         {
@@ -86,26 +79,18 @@ namespace NumeralSystemConverter
 
             do
             {
-                convertedNumber = ConvertDigit(number % radix, radix) + convertedNumber;
+                convertedNumber = ConvertDigit(number % radix) + convertedNumber;
                 number /= radix;
             }
             while (number > 0);
 
             return sign + convertedNumber;
         }
-        /// <summary>
-        /// Преобразовать цифру в другую систему счисления
-        /// </summary>
-        /// <param name="digit">Цифра</param>
-        /// <param name="radix">Оснавание</param>
-        /// <returns></returns>
-        public static char ConvertDigit(int digit, int radix)
-        {
-            CheckRadixCorrect(radix);
 
+        private static char ConvertDigit(int digit)
+        {
             return baseSymbols[digit];
         }
-
         private static void CheckRadixCorrect(int radix)
         {
             if (radix < MIN_RADIX || radix > MAX_RADIX)

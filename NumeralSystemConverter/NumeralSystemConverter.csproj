@@ -46,7 +46,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ConverterFrom10.cs" />
+    <Compile Include="Converters\Constants.cs" />
+    <Compile Include="Converters\ConverterFrom10.cs" />
+    <Compile Include="Converters\ConverterTo10.cs" />
     <Compile Include="Form1.cs">
       <SubType>Form</SubType>
     </Compile>
