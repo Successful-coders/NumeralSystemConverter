@@ -8,16 +8,19 @@ namespace NumeralSystemConverter
 {
     class History
     {
-        private Stack<Record> records;
+        private List<Record> records = new List<Record>();
 
 
         public void AddRecord(Record newRecord)
         {
-            records.Push(newRecord);
+            records.Add(newRecord);
         }
-        public Record PopRecord()
+        public Record this[int i]
         {
-            return records.Pop();
+            get
+            {
+                return records.ElementAt(i);
+            }
         }
         public void Clear()
         {

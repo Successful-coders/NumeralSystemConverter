@@ -30,6 +30,13 @@ namespace NumeralSystemConverter.Converter
                 return "0";
             }
 
+            string sign = "";
+            if (number < 0)
+            {
+                sign = "-";
+                number *= -1;
+            }
+
             StringBuilder convertedNumber = new StringBuilder();
 
             // Целая часть числа
@@ -57,7 +64,7 @@ namespace NumeralSystemConverter.Converter
                 }
             }
 
-            return convertedNumber.ToString();
+            return sign + convertedNumber.ToString();
         }
         /// <summary>
         /// Преобразовать целое число в другую систему счисления

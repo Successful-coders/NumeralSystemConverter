@@ -114,6 +114,7 @@ namespace NumeralSystemConverter.Converter
         }
 
 
+        public int Error => error;
         public string Number
         {
             get
