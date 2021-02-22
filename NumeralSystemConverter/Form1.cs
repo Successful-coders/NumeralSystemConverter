@@ -13,7 +13,7 @@ namespace NumeralSystemConverter
 {
     public partial class Form1 : Form
     {
-        Control control = new Control();
+        private Control control = new Control();
 
 
         public Form1()
@@ -29,7 +29,7 @@ namespace NumeralSystemConverter
             sourceRadix.Value = control.SourceRadix;
             //Основание с.сч. результата р2.
             resultRadix.Value = control.ResultRadix;
-            resultNumber.Text = "";
+            resultNumber.Text = "0";
             //Обновить состояние командных кнопок.
             UpdateButtons();
         }
@@ -59,7 +59,7 @@ namespace NumeralSystemConverter
                 }
                 //выполнить команду редактирования
                 sourceNumber.Text = control.DoCommand(commandIndex);
-                resultNumber.Text = "";
+                resultNumber.Text = "0";
             }
         }
         //Обновляет состояние командных кнопок по основанию с. сч. исходного числа.
@@ -99,7 +99,7 @@ namespace NumeralSystemConverter
             //Обновить состояние командных кнопок.
             this.UpdateButtons();
             sourceNumber.Text = control.DoCommand(18);
-            resultNumber.Text = "";
+            resultNumber.Text = "0";
         }
         //Изменяет значение основания с.сч. результата.
         private void resultRadix_ValueChanged(object sender, EventArgs e)
@@ -107,6 +107,7 @@ namespace NumeralSystemConverter
             resultRadix.Value = Convert.ToByte(resultRadix.Value);
             this.UpdateP2();
             UpdateButtons();
+            DoCommand(19);
         }
         //Выполняет необходимые обновления при смене ос. с.сч. р2.
         private void UpdateP2()

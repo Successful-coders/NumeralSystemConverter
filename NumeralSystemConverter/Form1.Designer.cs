@@ -84,6 +84,8 @@
             this.sourceNumber.ReadOnly = true;
             this.sourceNumber.Size = new System.Drawing.Size(233, 23);
             this.sourceNumber.TabIndex = 1;
+            this.sourceNumber.KeyDown += new System.Windows.Forms.KeyEventHandler(this.Form1_KeyDown);
+            this.sourceNumber.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.Form1_KeyPress);
             // 
             // sourceRadix
             // 

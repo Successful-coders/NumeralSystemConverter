@@ -55,7 +55,7 @@ namespace NumeralSystemConverter
         public Editor Editor => editor;
 
         //Точность представления результата.
-        private int Error => (int)Math.Round(editor.Error * Math.Log(SourceRadix) / Math.Log(ResultRadix) + 0.5);
+        private int Error => editor.Error;
 
 
         public enum StateType
