@@ -46,7 +46,10 @@ namespace NumeralSystemConverter
         //Выполнить команду.
         private void DoCommand(int commandIndex)
         {
-            if (commandIndex == 19) { resultNumber.Text = control.DoCommand(commandIndex); }
+            if (commandIndex == 19)
+            {
+                resultNumber.Text = control.DoCommand(commandIndex);
+            }
             else
             {
                 if (control.State == Control.StateType.Преобразовано)
@@ -56,7 +59,7 @@ namespace NumeralSystemConverter
                 }
                 //выполнить команду редактирования
                 sourceNumber.Text = control.DoCommand(commandIndex);
-                resultNumber.Text = "0";
+                resultNumber.Text = "";
             }
         }
         //Обновляет состояние командных кнопок по основанию с. сч. исходного числа.
@@ -96,7 +99,7 @@ namespace NumeralSystemConverter
             //Обновить состояние командных кнопок.
             this.UpdateButtons();
             sourceNumber.Text = control.DoCommand(18);
-            resultNumber.Text = "0";
+            resultNumber.Text = "";
         }
         //Изменяет значение основания с.сч. результата.
         private void resultRadix_ValueChanged(object sender, EventArgs e)

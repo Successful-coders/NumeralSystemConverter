@@ -32,11 +32,11 @@ namespace NumeralSystemConverter
         {
             if (commandIndex == 19)
             {
-                double r = ConverterTo10.Convert(editor.Number, (Int16)SourceRadix);
-                string res = ConverterFrom10.Convert(r, (Int32)ResultRadix, Error);
+                double decimalResult = ConverterTo10.Convert(editor.Number, (Int16)SourceRadix);
+                string result = ConverterFrom10.Convert(decimalResult, (Int32)ResultRadix, Error);
                 State = StateType.Преобразовано;
-                history.AddRecord(new Record(editor.Number, res, SourceRadix, ResultRadix));
-                return res;
+                history.AddRecord(new Record(editor.Number, result, SourceRadix, ResultRadix));
+                return result;
             }
             else
             {

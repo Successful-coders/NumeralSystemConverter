@@ -29,6 +29,10 @@ namespace NumeralSystemConverter.Converter
             {
                 return "0";
             }
+            if(radix == 10)
+            {
+                return number.ToString();
+            }
 
             string sign = "";
             if (number < 0)
@@ -64,7 +68,7 @@ namespace NumeralSystemConverter.Converter
                 }
             }
 
-            return sign + convertedNumber.ToString();
+            return sign + convertedNumber.ToString().TrimStart(new char[] { '0' }).TrimEnd(new char[] { '0' });
         }
         /// <summary>
         /// Преобразовать целое число в другую систему счисления
@@ -91,7 +95,7 @@ namespace NumeralSystemConverter.Converter
             }
             while (number > 0);
 
-            return sign + convertedNumber;
+            return sign + convertedNumber.TrimEnd(new char[] { '0' }); ;
         }
 
         private static char ConvertDigit(int digit)
