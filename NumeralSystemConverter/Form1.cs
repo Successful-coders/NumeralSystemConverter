@@ -27,9 +27,6 @@ namespace NumeralSystemConverter
             sourceNumber.Text = control.Editor.Number;
             //Основание с.сч. исходного числа р1.
             sourceRadix.Value = control.SourceRadix;
-            //Основание с.сч. результата р2.
-            resultRadix.Value = control.ResultRadix;
-            resultNumber.Text = "0";
             //Обновить состояние командных кнопок.
             UpdateButtons();
         }
@@ -48,7 +45,7 @@ namespace NumeralSystemConverter
         {
             if (commandIndex == 19)
             {
-                resultNumber.Text = control.DoCommand(commandIndex);
+                sourceNumber.Text = control.DoCommand(commandIndex);
             }
             else
             {
@@ -59,7 +56,7 @@ namespace NumeralSystemConverter
                 }
                 //выполнить команду редактирования
                 sourceNumber.Text = control.DoCommand(commandIndex);
-                resultNumber.Text = "0";
+                sourceNumber.Text = "0";
             }
         }
         //Обновляет состояние командных кнопок по основанию с. сч. исходного числа.
@@ -99,21 +96,7 @@ namespace NumeralSystemConverter
             //Обновить состояние командных кнопок.
             this.UpdateButtons();
             sourceNumber.Text = control.DoCommand(18);
-            resultNumber.Text = "0";
-        }
-        //Изменяет значение основания с.сч. результата.
-        private void resultRadix_ValueChanged(object sender, EventArgs e)
-        {
-            resultRadix.Value = Convert.ToByte(resultRadix.Value);
-            this.UpdateP2();
-            UpdateButtons();
-            DoCommand(19);
-        }
-        //Выполняет необходимые обновления при смене ос. с.сч. р2.
-        private void UpdateP2()
-        {
-            //Копировать основание результата.
-            control.ResultRadix = (int)resultRadix.Value;
+            sourceNumber.Text = "0";
         }
         //Пункт меню Справка.
         private void СправкаToolStripMenuItem_Click(object sender, EventArgs e)
