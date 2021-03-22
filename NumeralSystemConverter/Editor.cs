@@ -9,6 +9,7 @@ namespace NumeralSystemConverter.Converter
 {
     class Editor
     {
+        private const int MAX_LENGTH = 16;
         //Разделитель целой и дробной частей.
         private const char POINT_CHAR = '.';
         //Ноль.
@@ -18,6 +19,7 @@ namespace NumeralSystemConverter.Converter
         private string number = "";
         //Точность представления результата.
         private int error = 0;
+        public State state;
 
 
         /// <summary>
@@ -27,6 +29,28 @@ namespace NumeralSystemConverter.Converter
         {
             this.number += ConverterFrom10.Convert(number, radix);
             return this.number;
+        }
+        public string AddSymbol(int symbolNumber)
+        {
+            if (number.Length < MAX_LENGTH)
+            {
+                if (number == "0")
+                {
+                    if (symbolNumber >= 10)
+                        number = GetNumberSymbol(symbolNumber);
+                    else if (symbolNumber != 0)
+                        number += symbolNumber.ToString();
+                }
+                else
+                {
+                    if (symbolNumber >= 10)
+                        number += GetNumberSymbol(symbolNumber);
+                    else
+                        number += symbolNumber.ToString();
+                }
+            }
+            return number;
+
         }
         /// <summary>
         /// Добавить ноль.
@@ -49,7 +73,7 @@ namespace NumeralSystemConverter.Converter
         /// </summary>
         public string RemoveLastSymbol()
         {
-            if (number.Length > 0)
+            if (number.Length > 0 && number != "0")
                 number = number.Remove(number.Length - 1);
             return number;
         }
@@ -58,11 +82,31 @@ namespace NumeralSystemConverter.Converter
         /// </summary>
         public string Clear()
         {
-            number = "";
+            number = "0";
             return number;
         }
+        /// <summary>
+        /// Изменить знак.
+        /// </summary>
+        public string ChangeSign()
+        {
+            if (number.Length > 0 && number != ZERO)
+            {
+                if (number[0] == '-')
+                {
+                    number = number.Substring(1);
+                }
+                else
+                {
+                    number = '-' + number;
+                }
+            }
 
-        //Выполнить команду редактирования.
+            return number;
+        }
+        /// <summary>
+        /// Выполнить команду редактирования.
+        /// </summary>
         public string Edit(int commandIndex)
         {
             switch (commandIndex)
@@ -75,7 +119,15 @@ namespace NumeralSystemConverter.Converter
                     break;
                 case int n when (n >= 1 && n <= 15):
                     if (number != ZERO)
-                        AddDigit(commandIndex, 16);
+                    {
+                        AddSymbol(commandIndex);
+                    }
+                    else
+                    {
+                        number = "";
+                        AddSymbol(commandIndex);
+                    }
+
                     if (number.Contains(POINT_CHAR))
                         error++;
                     break;
@@ -87,31 +139,44 @@ namespace NumeralSystemConverter.Converter
                     }
                     break;
                 case 17:
-                    if (number != string.Empty)
-                        RemoveLastSymbol();
-                    if (number.Contains(POINT_CHAR))
-                        error--;
+                    ChangeSign();
                     break;
                 case 18:
                     Clear();
                     error = 0;
                     break;
+                case 19:
+                    if (number != string.Empty)
+                        RemoveLastSymbol();
+                    if (number.Contains(POINT_CHAR))
+                        error--;
+                    break;
                 case 20:
-                    if (number.Length > 0 && (number != ZERO))
-                    {
-                        if (number[0] != '-')
-                            number = "-" + number;
-                        else
-                        {
-                            number = number.Split('-')[1];
-                        }
-                    }
+                    Clear();
+                    error = 0;
                     break;
                 default:
                     break;
             }
             return number;
         }
+
+        private string GetNumberSymbol(int number)
+        {
+            string S = "";
+            switch (number)
+            {
+                case 10: S = "A"; break;
+                case 11: S = "B"; break;
+                case 12: S = "C"; break;
+                case 13: S = "D"; break;
+                case 14: S = "E"; break;
+                case 15: S = "F"; break;
+                default: break;
+            }
+            return S;
+        }
+
 
 
         public int Error => error;
@@ -121,6 +186,20 @@ namespace NumeralSystemConverter.Converter
             {
                 return number;
             }
+            set
+            {
+                number = value;
+            }
+        }
+        public bool IsNumberZero => number == ZERO;
+
+
+        public enum State
+        {
+            EditLeft,
+            EditRight,
+            Choose,
+            Print,
         }
     }
 }

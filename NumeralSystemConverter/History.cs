@@ -33,24 +33,18 @@ namespace NumeralSystemConverter
 
     public struct Record
     {
-        public string sourceNumber;
-        public string resultNumber;
-        public int sourceRadix;
-        public int resultRadix;
+        public string expression;
 
 
-        public Record(string sourceNumber, string resultNumber, int sourceRadix, int resultRadix)
+        public Record(string expression)
         {
-            this.sourceNumber = sourceNumber;
-            this.resultNumber = resultNumber;
-            this.sourceRadix = sourceRadix;
-            this.resultRadix = resultRadix;
+            this.expression = expression;
         }
 
 
         public override string ToString()
         {
-            return sourceNumber + " [" + sourceRadix + "] -> " + resultNumber + " [" + resultRadix + "]" + Environment.NewLine;
+            return expression + Environment.NewLine;
         }
     }
 }

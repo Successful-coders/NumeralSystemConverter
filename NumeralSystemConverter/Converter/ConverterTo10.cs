@@ -41,7 +41,7 @@ namespace NumeralSystemConverter.Converter
                     {
                         convertedNumber += number[digitIndex];
                     }
-                    weight = sign * Math.Pow(radix, digitIndex - 1);
+                    weight = sign * Math.Pow(radix, sign > 0 ? digitIndex - 1 : digitIndex - 2);
                     if (digitIndex < number.Length)
                     {
                         if (number[digitIndex] == pointChar)
@@ -70,7 +70,7 @@ namespace NumeralSystemConverter.Converter
                     }
                 }
 
-                return sign * Convert(convertedNumber, radix, weight);
+                return Convert(convertedNumber, radix, weight);
             }
         }
 
@@ -90,6 +90,7 @@ namespace NumeralSystemConverter.Converter
                     weight /= radix;
                     i++;
                 }
+
                 return result;
             }
         }

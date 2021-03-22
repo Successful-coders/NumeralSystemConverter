@@ -14,6 +14,8 @@ namespace NumeralSystemConverter
     public partial class Form1 : Form
     {
         private Control control = new Control();
+        string clipboard = "";
+        Memory<TPNumber>.FState memoryState = Memory<TPNumber>.FState.Off;
 
 
         public Form1()
@@ -26,7 +28,7 @@ namespace NumeralSystemConverter
         {
             sourceNumber.Text = control.Editor.Number;
             //Основание с.сч. исходного числа р1.
-            sourceRadix.Value = control.SourceRadix;
+            sourceRadix.Value = control.Radix;
             //Обновить состояние командных кнопок.
             UpdateButtons();
         }
@@ -43,21 +45,7 @@ namespace NumeralSystemConverter
         //Выполнить команду.
         private void DoCommand(int commandIndex)
         {
-            if (commandIndex == 19)
-            {
-                sourceNumber.Text = control.DoCommand(commandIndex);
-            }
-            else
-            {
-                if (control.State == Control.StateType.Преобразовано)
-                {
-                    //очистить содержимое редактора 
-                    sourceNumber.Text = control.DoCommand(18);
-                }
-                //выполнить команду редактирования
-                sourceNumber.Text = control.DoCommand(commandIndex);
-                sourceNumber.Text = "0";
-            }
+            sourceNumber.Text = control.DoCommand(commandIndex, ref clipboard, ref memoryState);
         }
         //Обновляет состояние командных кнопок по основанию с. сч. исходного числа.
         private void UpdateButtons()
@@ -92,10 +80,10 @@ namespace NumeralSystemConverter
         private void UpdateP1()
         {
             //Сохранить р1 в объекте управление.
-            control.SourceRadix = (int)sourceRadix.Value;
+            control.Radix = (int)sourceRadix.Value;
             //Обновить состояние командных кнопок.
             this.UpdateButtons();
-            sourceNumber.Text = control.DoCommand(18);
+            sourceNumber.Text = control.DoCommand(18, ref clipboard, ref memoryState);
             sourceNumber.Text = "0";
         }
         //Пункт меню Справка.
@@ -132,7 +120,7 @@ namespace NumeralSystemConverter
             if (e.KeyChar == '.') i = 16;
             if ((int)e.KeyChar == 8) i = 17;
             if ((int)e.KeyChar == 13) i = 19;
-            if ((i < control.SourceRadix) || (i >= 16)) DoCommand(i);
+            if ((i < control.Radix) || (i >= 16)) DoCommand(i);
         }
         //Обработка клавиш управления.
         private void Form1_KeyDown(object sender, KeyEventArgs e)

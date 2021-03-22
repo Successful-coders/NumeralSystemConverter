@@ -9,125 +9,175 @@ namespace NumeralSystemConverter
 {
     class TPNumber
     {
-        public const int MinP = 2;
-        public const int MaxP = 16;
+        private const int MIN_RADIX = 2;
+        private const int MAX_RADIX = 16;
 
         public static string zero = "0";
 
-        public string number;
-        public int p, c;
+        private string value;
+        private int radix;
+        private int errorLength;
 
 
-        public TPNumber(double a, int p, int c)
-        {
-            if (p < MinP || p > MaxP)
-                return;
-            this.p = p;
-            number = ConverterFrom10.Convert(a, p, c);
-            this.c = c;
-
-        }
-        public TPNumber(string a, string p, string c)
-        {
-            if (Convert.ToInt16(p) < Convert.ToInt16(MinP) || Convert.ToInt16(p) > Convert.ToInt16(MaxP))
-                return;
-
-            this.p = Convert.ToInt16(p);
-            this.c = Convert.ToInt16(c);
-            number = a;
-        }
         public TPNumber() { }
+        public TPNumber(double value, int radix, int errorLength)
+        {
+            if (radix < MIN_RADIX || radix > MAX_RADIX)
+                return;
+
+            this.radix = radix;
+            this.value = ConverterFrom10.Convert(value, radix, errorLength);
+            this.errorLength = errorLength;
+        }
+        public TPNumber(string value, string radix, string errorLength) : this(int.Parse(value), int.Parse(radix), int.Parse(errorLength)) { }
+
 
         public TPNumber Copy()
         {
-            TPNumber tmp = new TPNumber(this.number, Convert.ToString(this.p), Convert.ToString(this.c));
-            return tmp;
+            return new TPNumber(value, Convert.ToString(radix), Convert.ToString(errorLength));
         }
-        public TPNumber Add(TPNumber d)
+        public TPNumber Add(TPNumber otherNumber)
         {
             TPNumber result = new TPNumber();
-            double sum = (ConverterTo10.Convert(Convert.ToString(d.number), d.p)
-                + ConverterTo10.Convert(Convert.ToString(this.number), p));
-            result.number = Convert.ToString(ConverterFrom10.Convert(sum, d.p, d.c));
-            result.p = d.p;
-            result.c = d.c > this.c ? d.c : this.c;
+
+            double sum = ConverterTo10.Convert(Convert.ToString(otherNumber.value), otherNumber.radix) +
+                ConverterTo10.Convert(Convert.ToString(value), radix);
+            result.value = Convert.ToString(ConverterFrom10.Convert(sum, otherNumber.radix, otherNumber.errorLength));
+            result.radix = otherNumber.radix;
+            result.errorLength = Math.Max(otherNumber.errorLength, errorLength);
+
             return result;
         }
-        public TPNumber Multiply(TPNumber d)
+        public TPNumber Multiply(TPNumber otherNumber)
         {
             TPNumber result = new TPNumber();
-            result.number = Convert.ToString(ConverterFrom10.Convert(ConverterTo10.Convert(Convert.ToString(d.number), d.p)
-                * ConverterTo10.Convert(Convert.ToString(this.number), p), d.p, d.c));
-            result.p = d.p;
-            result.c = d.c + this.c;
+
+            result.value = Convert.ToString(ConverterFrom10.Convert(ConverterTo10.Convert(Convert.ToString(otherNumber.value), otherNumber.radix) *
+                ConverterTo10.Convert(Convert.ToString(value), radix), otherNumber.radix, otherNumber.errorLength));
+            result.radix = otherNumber.radix;
+            result.errorLength = otherNumber.errorLength + errorLength;
+
             return result;
         }
-        public TPNumber Substract(TPNumber d)
+        public TPNumber Subtract(TPNumber otherNumber)
         {
             TPNumber result = new TPNumber();
-            result.number = Convert.ToString(ConverterFrom10.Convert(ConverterTo10.Convert(Convert.ToString(this.number), p) -
-                ConverterTo10.Convert(Convert.ToString(d.number), d.p), d.p, d.c));
-            result.p = d.p;
-            result.c = d.c > this.c ? d.c : this.c;
+
+            result.value = Convert.ToString(ConverterFrom10.Convert(ConverterTo10.Convert(Convert.ToString(value), radix) -
+                ConverterTo10.Convert(Convert.ToString(otherNumber.value), otherNumber.radix), otherNumber.radix, otherNumber.errorLength));
+            result.radix = otherNumber.radix;
+            result.errorLength = Math.Max(otherNumber.errorLength, errorLength);
+
             return result;
         }
-        public TPNumber Divide(TPNumber d)
+        public TPNumber Divide(TPNumber otherNumber)
         {
             TPNumber result = new TPNumber();
-            result.number = Convert.ToString(ConverterFrom10.Convert(ConverterTo10.Convert(Convert.ToString(this.number), p) /
-                ConverterTo10.Convert(Convert.ToString(d.number), d.p), d.p, d.c));
-            result.p = d.p;
-            result.c = d.c > this.c ? d.c : this.c;
+
+            result.value = Convert.ToString(ConverterFrom10.Convert(ConverterTo10.Convert(Convert.ToString(value), radix) /
+                ConverterTo10.Convert(Convert.ToString(otherNumber.value), otherNumber.radix), otherNumber.radix, otherNumber.errorLength));
+            result.radix = otherNumber.radix;
+            result.errorLength = Math.Max(otherNumber.errorLength, errorLength);
+
             return result;
         }
         public TPNumber Inverse()
         {
-            if (c == 0)
-                c = 15;
-            else
-                c = 15;
-            TPNumber result = new TPNumber(number, Convert.ToString(p), Convert.ToString(c));
-            result.number = Convert.ToString(ConverterFrom10.Convert(Math.Round(1 / ConverterTo10.Convert(number, p), c), p, c));
+            errorLength = 15;
+
+            TPNumber result = new TPNumber(value, Convert.ToString(radix), Convert.ToString(errorLength));
+            result.value = Convert.ToString(ConverterFrom10.Convert(Math.Round(1 / ConverterTo10.Convert(value, radix), errorLength), radix, errorLength));
+
             return result;
         }
         public TPNumber Square()
         {
-            if (c < 8)
-                c = c * 2;
-            else
-                c = 15;
-            TPNumber result = new TPNumber(number, Convert.ToString(p), Convert.ToString(c));
-            result.number = Convert.ToString(ConverterFrom10.Convert(Math.Round(Math.Pow(ConverterTo10.Convert(number, p), 2), c), p, c));
+            errorLength = 15;
+
+            TPNumber result = new TPNumber(value, Convert.ToString(radix), Convert.ToString(errorLength));
+            result.value = Convert.ToString(ConverterFrom10.Convert(Math.Round(Math.Pow(ConverterTo10.Convert(value, radix), 0.5), errorLength), radix, errorLength));
+
             return result;
         }
 
 
-        public double PNum => ConverterTo10.Convert(number, p);
-        public double NumberP => p;
-        public string StringP
+        public double ValueNumber
         {
             get
             {
-                return number;
-            }
-            set
-            {
-                p = Convert.ToInt16(value);
+                return ConverterTo10.Convert(value, radix);
             }
         }
-        public double NumberC => c;
-        public string StringC
+        public string ValueString
         {
             get
             {
-                return c.ToString();
+                return value;
             }
             set
             {
-                c = Convert.ToInt16(value);
+                this.value = value;
             }
         }
-        public int P { set => p = value; }
-        public int C { set => c = value; }
+
+        public int RadixNumber
+        {
+            get
+            {
+                return radix;
+            }
+            set
+            {
+                if (radix >= MIN_RADIX && radix <= MAX_RADIX)
+                {
+                    radix = value;
+                }
+            }
+        }
+        public string RadixString
+        {
+            get
+            {
+                return radix.ToString();
+            }
+            set
+            {
+                int intRadix = int.Parse(value);
+                if (intRadix >= MIN_RADIX && intRadix <= MAX_RADIX)
+                {
+                    radix = intRadix;
+                }
+            }
+        }
+
+        public int ErrorLengthNumber
+        {
+            get
+            {
+                return errorLength;
+            }
+            set
+            {
+                if (value >= 0)
+                {
+                    errorLength = value;
+                }
+            }
+        }
+        public string ErrorLengthString
+        {
+            get
+            {
+                return errorLength.ToString();
+            }
+            set
+            {
+                int errorLengthInt = int.Parse(value);
+                if (errorLengthInt >= 0)
+                {
+                    errorLength = errorLengthInt;
+                }
+            }
+        }
     }
 }
