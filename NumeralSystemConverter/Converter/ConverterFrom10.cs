@@ -66,7 +66,15 @@ namespace NumeralSystemConverter.Converter
                 string start = Convert((int)number, radix);
                 string flt = Convert1(number - (int)number, radix, roundLength);
                 ans += flt.Length > 0 ? start + "." + flt : start;
-                return ans.Trim(new char[] { '0' });
+                
+                if (ans.Contains('.'))
+                {
+                    return ans.Trim(new char[] { '0' });
+                }
+                else
+                {
+                    return ans;
+                }
             }
         }
 

@@ -16,6 +16,7 @@ namespace NumeralSystemConverter
         private Control control = new Control();
         string clipboard = "";
         Memory<TPNumber>.FState memoryState = Memory<TPNumber>.FState.Off;
+        private int prevRadix = 10;
 
 
         public Form1()
@@ -28,7 +29,8 @@ namespace NumeralSystemConverter
         {
             sourceNumber.Text = control.Editor.Number;
             //Основание с.сч. исходного числа р1.
-            sourceRadix.Value = control.Radix;
+            sourceRadix.Value = 10;
+            prevRadix = 10;
             //Обновить состояние командных кнопок.
             UpdateButtons();
         }
@@ -72,7 +74,9 @@ namespace NumeralSystemConverter
         private void sourceRadix_ValueChanged(object sender, EventArgs e)
         {
             //Обновить состояние.
-            sourceRadix.Value = Convert.ToByte(sourceRadix.Value);
+            sourceNumber.Text = ConverterFrom10.Convert(ConverterTo10.Convert(sourceNumber.Text, prevRadix), Convert.ToInt32(sourceRadix.Value), 100);
+            prevRadix = Convert.ToInt32(sourceRadix.Value);
+            control.processor.LeftOperand.ValueString = sourceNumber.Text;
             //Обновить состояние командных кнопок.
             this.UpdateP1();
         }
@@ -83,8 +87,8 @@ namespace NumeralSystemConverter
             control.Radix = (int)sourceRadix.Value;
             //Обновить состояние командных кнопок.
             this.UpdateButtons();
-            sourceNumber.Text = control.DoCommand(18, ref clipboard, ref memoryState);
-            sourceNumber.Text = "0";
+            //sourceNumber.Text = control.DoCommand(18, ref clipboard, ref memoryState);
+            //sourceNumber.Text = "0";
         }
         //Пункт меню Справка.
         private void СправкаToolStripMenuItem_Click(object sender, EventArgs e)
@@ -118,8 +122,13 @@ namespace NumeralSystemConverter
             if (e.KeyChar >= 'a' && e.KeyChar <= 'f') i = (int)e.KeyChar - 'a' + 10;
             if (e.KeyChar >= '0' && e.KeyChar <= '9') i = (int)e.KeyChar - '0';
             if (e.KeyChar == '.') i = 16;
-            if ((int)e.KeyChar == 8) i = 17;
-            if ((int)e.KeyChar == 13) i = 19;
+            if ((int)e.KeyChar == 8) i = 19;
+            if ((int)e.KeyChar == 13) i = 18;
+            if (e.KeyChar == '+') i = 21;
+            if (e.KeyChar == '-') i = 22;
+            if (e.KeyChar == '*') i = 23;
+            if (e.KeyChar == '/') i = 24;
+            if (e.KeyChar == '=' || e.KeyChar == '\n' || e.KeyChar == '\r') i = 27;
             if ((i < control.Radix) || (i >= 16)) DoCommand(i);
         }
         //Обработка клавиш управления.

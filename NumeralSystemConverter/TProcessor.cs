@@ -37,36 +37,22 @@ namespace NumeralSystemConverter
             if (state == OperationState.None)
                 return;
 
-            T realRightOperand;
-            if (rightOperand.ValueString != "")
-            {
-                realRightOperand = rightOperand;
-            }
-            else
-            {
-                realRightOperand = (T)leftOperand.Copy();
-            }
-
             if (state == OperationState.Add)
             {
-                leftOperand = (T)leftOperand.Add(realRightOperand);
+                leftOperand = (T)leftOperand.Add(rightOperand);
             }
             else if (state == OperationState.Subtract)
             {
-                leftOperand = (T)leftOperand.Subtract(realRightOperand);
+                leftOperand = (T)leftOperand.Subtract(rightOperand);
             }
             else if (state == OperationState.Multiply)
             {
-                leftOperand = (T)leftOperand.Multiply(realRightOperand);
+                leftOperand = (T)leftOperand.Multiply(rightOperand);
             }
             else if (state == OperationState.Divide)
             {
-                leftOperand = (T)leftOperand.Divide(realRightOperand);
+                leftOperand = (T)leftOperand.Divide(rightOperand);
             }
-
-            rightOperand = new TPNumber("0", rightOperand.RadixString, rightOperand.ErrorLengthString) as T;
-
-            state = OperationState.None;
         }
         public void CalculateFunction(/*bool isRignt*/)
         {

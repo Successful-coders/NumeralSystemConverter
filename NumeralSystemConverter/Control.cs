@@ -14,7 +14,7 @@ namespace NumeralSystemConverter
         private const int DEFAULT_ERROR = 10;
 
         private Editor editor = new Editor();
-        private TProcessor<TPNumber> processor = new TProcessor<TPNumber>(DEFAULT_RADIX);
+        public TProcessor<TPNumber> processor = new TProcessor<TPNumber>(DEFAULT_RADIX);
         private Memory<TPNumber> memory = new Memory<TPNumber>();
         private TPNumber number = new TPNumber(0, 10, 0);
         private History history = new History();
@@ -39,6 +39,8 @@ namespace NumeralSystemConverter
                 case int n when (n >= 21 && n <= 24):
                     if (processor.State != (TProcessor<TPNumber>.OperationState)commandIndex - 20 && editor.state == Editor.State.EditRight)
                         str = DoExpresion(commandIndex - 20);
+                    else if (processor.State != (TProcessor<TPNumber>.OperationState)commandIndex - 20 && editor.state == Editor.State.Choose)
+                        str = DoExpresion((int)processor.State);
                     str = Prepare(editor.Number, commandIndex - 20);
                     break;
                 case int n when (n >= 25 && n <= 26):
@@ -319,6 +321,7 @@ namespace NumeralSystemConverter
             }
 
             editor.Clear();
+
             record += " = " + result;
             if (record.Length >= 9)
                 history.AddRecord(new Record(record));

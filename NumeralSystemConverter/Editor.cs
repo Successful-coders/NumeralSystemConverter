@@ -16,7 +16,7 @@ namespace NumeralSystemConverter.Converter
         private const string ZERO = "0";
 
         //Поле для хранения редактируемого числа.
-        private string number = "";
+        private string number = "0";
         //Точность представления результата.
         private int error = 0;
         public State state;
