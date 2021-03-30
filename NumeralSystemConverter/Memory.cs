@@ -37,6 +37,17 @@ namespace NumeralSystemConverter
                 number = (T)new TPNumber(otherNumber.ValueNumber, otherNumber.RadixNumber, otherNumber.ErrorLengthNumber);
             else
                 number = (T)otherNumber.Add(number);
+
+            State = FState.On;
+        }
+        public void Remove(T otherNumber)
+        {
+            if (State == FState.Off)
+                number = (T)new TPNumber(-otherNumber.ValueNumber, otherNumber.RadixNumber, otherNumber.ErrorLengthNumber);
+            else
+                number = (T)otherNumber.Subtract(number);
+
+            State = FState.On;
         }
         public void Clear()
         {

@@ -150,6 +150,8 @@ namespace NumeralSystemConverter
             record += res;
             history.AddRecord(new Record(record));
 
+            prevOperation = (int)processor.State;
+
             return res;
         }
         public string DoExpresion(int commandIndex)
@@ -182,7 +184,7 @@ namespace NumeralSystemConverter
 
                         break;
                     case 1:
-                        processor.RightOperand.ValueString = processor.LeftOperand.ValueString;
+                        //processor.RightOperand.ValueString = processor.LeftOperand.ValueString;
                         break;
                 }
 
@@ -229,7 +231,6 @@ namespace NumeralSystemConverter
                 case 0:
                     {
                         memory.Clear();
-                        editor.Clear();
 
                         return editor.Number;
                     }
@@ -239,16 +240,28 @@ namespace NumeralSystemConverter
                     }
                 case 2:
                     {
-
                         memory.Store(buf);
+                        editor.Clear();
+
                         break;
                     }
                 case 3:
                     {
                         memory.Add(buf);
+                        editor.Clear();
+
+                        break;
+                    }
+                case 4:
+                    {
+                        memory.Remove(buf);
+                        editor.Clear();
+
                         break;
                     }
             }
+
+            state = memory.State;
 
             return editor.Number;
         }

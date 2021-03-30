@@ -536,7 +536,7 @@
             this.button32.Name = "button32";
             this.button32.Size = new System.Drawing.Size(50, 50);
             this.button32.TabIndex = 41;
-            this.button32.Tag = "100";
+            this.button32.Tag = "33";
             this.button32.Text = "M-";
             this.button32.UseVisualStyleBackColor = true;
             this.button32.Click += new System.EventHandler(this.button_Click);

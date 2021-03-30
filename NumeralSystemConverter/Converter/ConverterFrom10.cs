@@ -51,8 +51,13 @@ namespace NumeralSystemConverter.Converter
         {
             CheckRadixCorrect(radix);
 
-            //if (number != 0)
-            //    roundLength = number.ToString().Length - number.ToString().IndexOf('.') - 1;
+            var myRoundLength = number.ToString().Length - number.ToString().IndexOf('.') - 1;
+
+            if (roundLength == 0 && myRoundLength != 0)
+            {
+                roundLength = myRoundLength;
+            }
+
 
             if (number == 0)
             {
