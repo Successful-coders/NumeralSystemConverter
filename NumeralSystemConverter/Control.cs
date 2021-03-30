@@ -18,6 +18,8 @@ namespace NumeralSystemConverter
         private Memory<TPNumber> memory = new Memory<TPNumber>();
         private TPNumber number = new TPNumber(0, 10, 0);
         private History history = new History();
+        private int prevCommand = -1;
+        private int prevOperation;
 
 
         public Control()
@@ -47,6 +49,8 @@ namespace NumeralSystemConverter
                     str = DoFunction(commandIndex - 20);
                     break;
                 case int n when (n >= 27 && n <= 27):
+                    if (prevCommand >= 21 && prevCommand <= 24)
+                        editor.state = Editor.State.EditRight;
                     str = DoExpresion((int)processor.State);
                     break;
                 case int n when (n >= 28 && n <= 28):
@@ -59,10 +63,11 @@ namespace NumeralSystemConverter
                     str = DoClipboardCommand(commandIndex -34, ref clipboard);
                     break;
                 default:
-                    str = number.ValueString;//TODO
+                    str = number.ValueString;
                     break;
             }
 
+            prevCommand = commandIndex;
             return str;
         }
         public string DoEditorCommand(int commandIndex)
@@ -88,16 +93,16 @@ namespace NumeralSystemConverter
                 if (commandIndex == 6)
                 {
                     record = "Sqr( " + number + " ) = ";
-                    processor.CalculateFunction();
+                    processor.CalculateFunction(true);
                 }
                 else
                 {
                     record += "1 / " + number + " = ";
-                    processor.CalculateFunction();
+                    processor.CalculateFunction(true);
                 }
                 res += processor.RightOperand.ValueNumber;
             }
-            else
+            else if (editor.state == Editor.State.EditLeft)
             {
                 if (editor.state != Editor.State.Print)
                     processor.LeftOperand.ValueString = number;
@@ -105,12 +110,34 @@ namespace NumeralSystemConverter
                 if (commandIndex == 6)
                 {
                     record = "Sqr( " + number + " ) = ";
-                    processor.CalculateFunction();
+                    processor.CalculateFunction(false);
                 }
                 else
                 {
                     record += "1 / " + number + " = ";
-                    processor.CalculateFunction();
+                    processor.CalculateFunction(false);
+                }
+                res += processor.LeftOperand.ValueNumber;
+            }
+            else
+            {
+                number = DoExpresion(prevOperation);
+
+                editor.state = Editor.State.EditLeft;
+
+                if (editor.state != Editor.State.Print)
+                    processor.LeftOperand.ValueString = number;
+
+                processor.State = (TProcessor<TPNumber>.OperationState)commandIndex;
+                if (commandIndex == 6)
+                {
+                    record = "Sqr( " + number + " ) = ";
+                    processor.CalculateFunction(false);
+                }
+                else
+                {
+                    record += "1 / " + number + " = ";
+                    processor.CalculateFunction(false);
                 }
                 res += processor.LeftOperand.ValueNumber;
             }
@@ -134,6 +161,7 @@ namespace NumeralSystemConverter
             string number = editor.Number;
             string result = "";
 
+            processor.RightOperand.ErrorLengthNumber = processor.LeftOperand.ErrorLengthNumber = Error;
             if (processor.State != TProcessor<TPNumber>.OperationState.None)
             {
                 if (processor.State == TProcessor<TPNumber>.OperationState.Divide && number == "0")
@@ -328,6 +356,7 @@ namespace NumeralSystemConverter
 
             editor.state = Editor.State.Choose;
             processor.State = (TProcessor<TPNumber>.OperationState)command;
+            prevOperation = (int)processor.State;
             return result;
         }
 

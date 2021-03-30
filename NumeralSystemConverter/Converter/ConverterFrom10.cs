@@ -69,7 +69,7 @@ namespace NumeralSystemConverter.Converter
                 
                 if (ans.Contains('.'))
                 {
-                    return ans.Trim(new char[] { '0' });
+                    return ans.TrimEnd(new char[] { '0' });
                 }
                 else
                 {

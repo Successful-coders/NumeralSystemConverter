@@ -54,13 +54,13 @@ namespace NumeralSystemConverter
                 leftOperand = (T)leftOperand.Divide(rightOperand);
             }
         }
-        public void CalculateFunction(/*bool isRignt*/)
+        public void CalculateFunction(bool isRignt)
         {
             if (state == OperationState.None)
                 return;
 
-            //if (!isRignt)
-            //{
+            if (!isRignt)
+            {
                 if (state == OperationState.Inverse)
                 {
                     leftOperand = (T)leftOperand.Inverse();
@@ -69,18 +69,18 @@ namespace NumeralSystemConverter
                 {
                     leftOperand = (T)leftOperand.Square();
                 }
-            //}
-            //else
-            //{
-            //    if (state == OperationState.Inverse)
-            //    {
-            //        leftOperand = (T)leftOperand.Inverse();
-            //    }
-            //    if (state == OperationState.Square)
-            //    {
-            //        leftOperand = (T)leftOperand.Square();
-            //    }
-            //}
+            }
+            else
+            {
+                if (state == OperationState.Inverse)
+                {
+                    leftOperand = (T)rightOperand.Inverse();
+                }
+                if (state == OperationState.Square)
+                {
+                    leftOperand = (T)rightOperand.Square();
+                }
+            }
         }
 
 

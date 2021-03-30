@@ -70,7 +70,8 @@ namespace NumeralSystemConverter.Converter
                     }
                 }
 
-                return Convert(convertedNumber, radix, weight);
+                double returnedNumber = Convert(convertedNumber, radix, weight);
+                return returnedNumber;
             }
         }
 
