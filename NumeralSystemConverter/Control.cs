@@ -52,6 +52,7 @@ namespace NumeralSystemConverter
                     if (prevCommand >= 21 && prevCommand <= 24)
                         editor.state = Editor.State.EditRight;
                     str = DoExpresion((int)processor.State);
+                    editor.state = Editor.State.EditLeft;
                     break;
                 case int n when (n >= 28 && n <= 28):
                     str = Reset();
@@ -73,6 +74,9 @@ namespace NumeralSystemConverter
         public string DoEditorCommand(int commandIndex)
         {
             State = StateType.Editing;
+
+            if (prevCommand == 27)
+                editor.Clear();
 
             return editor.Edit(commandIndex);
         }
