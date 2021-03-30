@@ -51,6 +51,9 @@ namespace NumeralSystemConverter.Converter
         {
             CheckRadixCorrect(radix);
 
+            //if (number != 0)
+            //    roundLength = number.ToString().Length - number.ToString().IndexOf('.') - 1;
+
             if (number == 0)
             {
                 return "0";

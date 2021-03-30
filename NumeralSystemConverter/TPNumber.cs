@@ -29,7 +29,7 @@ namespace NumeralSystemConverter
             this.value = ConverterFrom10.Convert(value, radix, errorLength);
             this.errorLength = errorLength;
         }
-        public TPNumber(string value, string radix, string errorLength) : this(int.Parse(value), int.Parse(radix), int.Parse(errorLength)) { }
+        public TPNumber(string value, string radix, string errorLength) : this(double.Parse(value), int.Parse(radix), int.Parse(errorLength)) { }
 
 
         public TPNumber Copy()
@@ -40,9 +40,10 @@ namespace NumeralSystemConverter
         {
             TPNumber result = new TPNumber();
 
+            result.errorLength = otherNumber.errorLength + errorLength;
             double sum = ConverterTo10.Convert(Convert.ToString(otherNumber.value), otherNumber.radix) +
                 ConverterTo10.Convert(Convert.ToString(value), radix);
-            result.value = Convert.ToString(ConverterFrom10.Convert(sum, otherNumber.radix, otherNumber.errorLength));
+            result.value = Convert.ToString(ConverterFrom10.Convert(sum, otherNumber.radix, result.errorLength));
             result.radix = otherNumber.radix;
             result.errorLength = Math.Max(otherNumber.errorLength, errorLength);
 
@@ -52,10 +53,10 @@ namespace NumeralSystemConverter
         {
             TPNumber result = new TPNumber();
 
-            result.value = Convert.ToString(ConverterFrom10.Convert(ConverterTo10.Convert(Convert.ToString(otherNumber.value), otherNumber.radix) *
-                ConverterTo10.Convert(Convert.ToString(value), radix), otherNumber.radix, otherNumber.errorLength));
-            result.radix = otherNumber.radix;
             result.errorLength = otherNumber.errorLength + errorLength;
+            result.value = Convert.ToString(ConverterFrom10.Convert(ConverterTo10.Convert(Convert.ToString(otherNumber.value), otherNumber.radix) *
+                ConverterTo10.Convert(Convert.ToString(value), radix), otherNumber.radix, result.errorLength));
+            result.radix = otherNumber.radix;
 
             return result;
         }
@@ -63,8 +64,9 @@ namespace NumeralSystemConverter
         {
             TPNumber result = new TPNumber();
 
+            result.errorLength = otherNumber.errorLength + errorLength;
             result.value = Convert.ToString(ConverterFrom10.Convert(ConverterTo10.Convert(Convert.ToString(value), radix) -
-                ConverterTo10.Convert(Convert.ToString(otherNumber.value), otherNumber.radix), otherNumber.radix, otherNumber.errorLength));
+                ConverterTo10.Convert(Convert.ToString(otherNumber.value), otherNumber.radix), otherNumber.radix, result.errorLength));
             result.radix = otherNumber.radix;
             result.errorLength = Math.Max(otherNumber.errorLength, errorLength);
 
@@ -74,10 +76,10 @@ namespace NumeralSystemConverter
         {
             TPNumber result = new TPNumber();
 
+            result.errorLength = otherNumber.errorLength + errorLength;
             result.value = Convert.ToString(ConverterFrom10.Convert(ConverterTo10.Convert(Convert.ToString(value), radix) /
-                ConverterTo10.Convert(Convert.ToString(otherNumber.value), otherNumber.radix), otherNumber.radix, otherNumber.errorLength));
+                ConverterTo10.Convert(Convert.ToString(otherNumber.value), otherNumber.radix), otherNumber.radix, result.errorLength));
             result.radix = otherNumber.radix;
-            result.errorLength = Math.Max(otherNumber.errorLength, errorLength);
 
             return result;
         }
