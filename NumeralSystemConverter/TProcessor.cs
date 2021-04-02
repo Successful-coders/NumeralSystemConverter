@@ -74,11 +74,11 @@ namespace NumeralSystemConverter
             {
                 if (state == OperationState.Inverse)
                 {
-                    leftOperand = (T)rightOperand.Inverse();
+                    rightOperand = (T)rightOperand.Inverse();
                 }
                 if (state == OperationState.Square)
                 {
-                    leftOperand = (T)rightOperand.Square();
+                    rightOperand = (T)rightOperand.Square();
                 }
             }
         }
