@@ -33,7 +33,6 @@ namespace NumeralSystemConverter
         public string DoCommand(int commandIndex, ref string clipboard, ref Memory<TPNumber>.FState memoryState)
         {
             string str;
-            SetRadix();
 
             switch (commandIndex)
             {
@@ -43,7 +42,7 @@ namespace NumeralSystemConverter
                 case int n when (n >= 21 && n <= 24):
                     if (processor.State != (TProcessor<TPNumber>.OperationState)commandIndex - 20 && editor.state == Editor.State.EditRight)
                         str = DoExpresion(commandIndex - 20);
-                    else if (processor.State != (TProcessor<TPNumber>.OperationState)commandIndex - 20 && editor.state == Editor.State.Choose)
+                    else if (editor.state == Editor.State.Choose)
                         str = DoExpresion((int)processor.State);
                     str = Prepare(editor.Number, commandIndex - 20);
                     break;
@@ -385,17 +384,6 @@ namespace NumeralSystemConverter
             prevBinaryOperation = (int)processor.State;
 
             return result;
-        }
-        private void SetRadix()
-        {
-            if (editor.state == Editor.State.Choose || editor.state == Editor.State.EditRight || editor.state == Editor.State.Print)
-            {
-                processor.RightOperand.RadixNumber = Radix;
-            }
-            else
-            {
-                processor.LeftOperand.RadixNumber = Radix;
-            }
         }
 
 

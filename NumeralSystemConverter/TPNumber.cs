@@ -29,7 +29,16 @@ namespace NumeralSystemConverter
             this.value = ConverterFrom10.Convert(value, radix, errorLength);
             this.errorLength = errorLength;
         }
-        public TPNumber(string value, string radix, string errorLength) : this(double.Parse(value), int.Parse(radix), int.Parse(errorLength)) { }
+        public TPNumber(string value, string radix, string errorLength)
+        {
+            this.radix = int.Parse(radix);
+
+            if (this.radix < MIN_RADIX || this.radix > MAX_RADIX)
+                return;
+
+            this.value = value;
+            this.errorLength = int.Parse(errorLength);
+        }
 
 
         public TPNumber Copy()

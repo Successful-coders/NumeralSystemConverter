@@ -77,15 +77,14 @@ namespace NumeralSystemConverter
             sourceNumber.Text = ConverterFrom10.Convert(ConverterTo10.Convert(sourceNumber.Text, prevRadix), Convert.ToInt32(sourceRadix.Value), 100);
             prevRadix = Convert.ToInt32(sourceRadix.Value);
             control.Editor.Number = sourceNumber.Text;
-            control.processor.LeftOperand.ValueString = sourceNumber.Text;
             control.Radix = (int)sourceRadix.Value;
             if (control.Editor.state == Editor.State.Choose || control.Editor.state == Editor.State.EditRight || control.Editor.state == Editor.State.Print)
             {
-                control.processor.RightOperand.RadixNumber = control.Radix;
+                control.processor.RightOperand = new TPNumber(sourceNumber.Text, control.Radix.ToString(), control.processor.RightOperand.ErrorLengthString);
             }
             else
             {
-                control.processor.LeftOperand.RadixNumber = control.Radix;
+                control.processor.LeftOperand = new TPNumber(sourceNumber.Text, control.Radix.ToString(), control.processor.LeftOperand.ErrorLengthString);
             }
             //Обновить состояние командных кнопок.
             this.UpdateP1();
