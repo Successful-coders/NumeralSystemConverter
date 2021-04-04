@@ -76,7 +76,17 @@ namespace NumeralSystemConverter
             //Обновить состояние.
             sourceNumber.Text = ConverterFrom10.Convert(ConverterTo10.Convert(sourceNumber.Text, prevRadix), Convert.ToInt32(sourceRadix.Value), 100);
             prevRadix = Convert.ToInt32(sourceRadix.Value);
+            control.Editor.Number = sourceNumber.Text;
             control.processor.LeftOperand.ValueString = sourceNumber.Text;
+            control.Radix = (int)sourceRadix.Value;
+            if (control.Editor.state == Editor.State.Choose || control.Editor.state == Editor.State.EditRight || control.Editor.state == Editor.State.Print)
+            {
+                control.processor.RightOperand.RadixNumber = control.Radix;
+            }
+            else
+            {
+                control.processor.LeftOperand.RadixNumber = control.Radix;
+            }
             //Обновить состояние командных кнопок.
             this.UpdateP1();
         }

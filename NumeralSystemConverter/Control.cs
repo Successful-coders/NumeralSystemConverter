@@ -20,7 +20,7 @@ namespace NumeralSystemConverter
         private History history = new History();
         private int prevCommand = -1;
         private int prevOperation;
-        private int prevBinaryOpertaion;
+        private int prevBinaryOperation;
 
 
         public Control()
@@ -33,6 +33,7 @@ namespace NumeralSystemConverter
         public string DoCommand(int commandIndex, ref string clipboard, ref Memory<TPNumber>.FState memoryState)
         {
             string str;
+            SetRadix();
 
             switch (commandIndex)
             {
@@ -52,7 +53,7 @@ namespace NumeralSystemConverter
                 case int n when (n >= 27 && n <= 27):
                     if (prevCommand >= 21 && prevCommand <= 24)
                         editor.state = Editor.State.EditRight;
-                    str = DoExpresion((int)processor.State);
+                    str = DoExpresion(prevBinaryOperation);
                     editor.state = Editor.State.EditLeft;
                     break;
                 case int n when (n >= 28 && n <= 28):
@@ -76,7 +77,7 @@ namespace NumeralSystemConverter
         {
             State = StateType.Editing;
 
-            if (prevCommand == 27)
+            if (prevCommand == 27 || (prevCommand >= 21 && prevCommand <= 24))
                 editor.Clear();
 
             return editor.Edit(commandIndex);
@@ -92,7 +93,7 @@ namespace NumeralSystemConverter
             string res = "";
             string record = "";
 
-            if (editor.state == Editor.State.EditRight)
+            if (editor.state == Editor.State.EditRight || editor.state == Editor.State.Choose)
             {
                 processor.RightOperand.ValueString = number;
                 if (commandIndex == 6)
@@ -148,7 +149,7 @@ namespace NumeralSystemConverter
 
             editor.Number = res;
 
-            if (editor.state != Editor.State.EditRight)
+            if (editor.state != Editor.State.EditRight && editor.state != Editor.State.Choose)
                 editor.state = Editor.State.Print;
 
             record += res;
@@ -178,23 +179,23 @@ namespace NumeralSystemConverter
 
                 string rec = processor.LeftOperand.ValueString;
 
-                switch ((int)editor.state)
+                switch (editor.state)
                 {
-                    case 2:
+                    case Editor.State.Choose:
                         if (number != "")
                             processor.RightOperand.ValueString = number;
                         else
                             processor.RightOperand.ValueString = processor.LeftOperand.ValueString;
 
                         break;
-                    case 1:
+                    case Editor.State.EditRight:
                         //processor.RightOperand.ValueString = processor.LeftOperand.ValueString;
                         break;
                     case 0:
                         break;
                     default:
                         processor.RightOperand.ValueString = number;
-                        processor.State = (TProcessor<TPNumber>.OperationState)prevBinaryOpertaion;
+                        processor.State = (TProcessor<TPNumber>.OperationState)prevBinaryOperation;
                         break;
                 }
 
@@ -224,6 +225,7 @@ namespace NumeralSystemConverter
         public string Reset()
         {
             State = StateType.Starting;
+            number.RadixNumber = Radix;
 
             return number.ValueString;
         }
@@ -380,8 +382,20 @@ namespace NumeralSystemConverter
             editor.state = Editor.State.Choose;
             processor.State = (TProcessor<TPNumber>.OperationState)command;
             prevOperation = (int)processor.State;
-            prevBinaryOpertaion = (int)processor.State;
+            prevBinaryOperation = (int)processor.State;
+
             return result;
+        }
+        private void SetRadix()
+        {
+            if (editor.state == Editor.State.Choose || editor.state == Editor.State.EditRight || editor.state == Editor.State.Print)
+            {
+                processor.RightOperand.RadixNumber = Radix;
+            }
+            else
+            {
+                processor.LeftOperand.RadixNumber = Radix;
+            }
         }
 
 
