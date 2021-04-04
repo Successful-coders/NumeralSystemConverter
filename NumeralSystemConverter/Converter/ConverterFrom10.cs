@@ -77,12 +77,13 @@ namespace NumeralSystemConverter.Converter
                 
                 if (ans.Contains('.'))
                 {
-                    return ans.TrimEnd(new char[] { '0' });
+                    ans = ans.TrimEnd(new char[] { '0' });
+                    if (ans[ans.Length - 1] == '.')
+                    {
+                        ans = ans.TrimEnd(new char[] { '.' });
+                    }
                 }
-                else
-                {
-                    return ans;
-                }
+                return ans;
             }
         }
 
