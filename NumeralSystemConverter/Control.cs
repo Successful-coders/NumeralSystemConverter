@@ -20,6 +20,7 @@ namespace NumeralSystemConverter
         private History history = new History();
         private int prevCommand = -1;
         private int prevOperation;
+        private int prevBinaryOpertaion;
 
 
         public Control()
@@ -125,25 +126,24 @@ namespace NumeralSystemConverter
             }
             else
             {
-                number = DoExpresion(prevOperation);
+                //number = DoExpresion(prevOperation);
 
-                editor.state = Editor.State.EditLeft;
+               // editor.state = Editor.State.EditRight;
 
-                if (editor.state != Editor.State.Print)
-                    processor.LeftOperand.ValueString = number;
+                processor.RightOperand.ValueString = number;
 
                 processor.State = (TProcessor<TPNumber>.OperationState)commandIndex;
                 if (commandIndex == 6)
                 {
                     record = "Sqr( " + number + " ) = ";
-                    processor.CalculateFunction(false);
+                    processor.CalculateFunction(true);
                 }
                 else
                 {
                     record += "1 / " + number + " = ";
-                    processor.CalculateFunction(false);
+                    processor.CalculateFunction(true);
                 }
-                res += processor.LeftOperand.ValueNumber;
+                res += processor.RightOperand.ValueNumber;
             }
 
             editor.Number = res;
@@ -189,6 +189,12 @@ namespace NumeralSystemConverter
                         break;
                     case 1:
                         //processor.RightOperand.ValueString = processor.LeftOperand.ValueString;
+                        break;
+                    case 0:
+                        break;
+                    default:
+                        processor.RightOperand.ValueString = number;
+                        processor.State = (TProcessor<TPNumber>.OperationState)prevBinaryOpertaion;
                         break;
                 }
 
@@ -245,7 +251,7 @@ namespace NumeralSystemConverter
                 case 2:
                     {
                         memory.Store(buf);
-                        editor.Clear();
+                        //editor.Clear();
 
                         break;
                     }
@@ -374,6 +380,7 @@ namespace NumeralSystemConverter
             editor.state = Editor.State.Choose;
             processor.State = (TProcessor<TPNumber>.OperationState)command;
             prevOperation = (int)processor.State;
+            prevBinaryOpertaion = (int)processor.State;
             return result;
         }
 
