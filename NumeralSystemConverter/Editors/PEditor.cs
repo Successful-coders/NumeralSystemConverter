@@ -1,36 +1,22 @@
-﻿using System;
+﻿using NumeralSystemConverter.Converter;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using static NumeralSystemConverter.Editors.Constants;
 
-namespace NumeralSystemConverter.Converter
+namespace NumeralSystemConverter.Editors
 {
-    class Editor
+    class PEditor : AEditor
     {
-        private const int MAX_LENGTH = 16;
-        //Разделитель целой и дробной частей.
-        private const char POINT_CHAR = '.';
-        //Ноль.
-        private const string ZERO = "0";
-
-        //Поле для хранения редактируемого числа.
-        private string number = "0";
-        //Точность представления результата.
-        private int error = 0;
-        public State state;
-
-
-        /// <summary>
-        /// Добавить цифру.
-        /// </summary>
-        public string AddDigit(int number, int radix)
+        public override string AddDigit(int number, int radix)
         {
             this.number += ConverterFrom10.Convert(number, radix);
             return this.number;
         }
-        public string AddSymbol(int symbolNumber)
+        public override string AddSymbol(int symbolNumber)
         {
             if (number.Length < MAX_LENGTH)
             {
@@ -52,43 +38,28 @@ namespace NumeralSystemConverter.Converter
             return number;
 
         }
-        /// <summary>
-        /// Добавить ноль.
-        /// </summary>
-        public string AddZero()
+        public override string AddZero()
         {
             number += ZERO;
             return number;
         }
-        /// <summary>
-        /// Добавить разделитель.
-        /// </summary>
-        public string AddPoint()
+        public override string AddPoint()
         {
             number += POINT_CHAR;
             return number;
         }
-        /// <summary>
-        /// Удалить символ справа
-        /// </summary>
-        public string RemoveLastSymbol()
+        public override string RemoveLastSymbol()
         {
             if (number.Length > 0 && number != "0")
                 number = number.Remove(number.Length - 1);
             return number;
         }
-        /// <summary>
-        /// Очистить редактируемое число.
-        /// </summary>
-        public string Clear()
+        public override string Clear()
         {
-            number = "0";
+            number = ZERO;
             return number;
         }
-        /// <summary>
-        /// Изменить знак.
-        /// </summary>
-        public string ChangeSign()
+        public override string ChangeSign()
         {
             if (number.Length > 0 && number != ZERO)
             {
@@ -104,10 +75,7 @@ namespace NumeralSystemConverter.Converter
 
             return number;
         }
-        /// <summary>
-        /// Выполнить команду редактирования.
-        /// </summary>
-        public string Edit(int commandIndex)
+        public override string Edit(int commandIndex)
         {
             switch (commandIndex)
             {
@@ -159,47 +127,6 @@ namespace NumeralSystemConverter.Converter
                     break;
             }
             return number;
-        }
-
-        private string GetNumberSymbol(int number)
-        {
-            string S = "";
-            switch (number)
-            {
-                case 10: S = "A"; break;
-                case 11: S = "B"; break;
-                case 12: S = "C"; break;
-                case 13: S = "D"; break;
-                case 14: S = "E"; break;
-                case 15: S = "F"; break;
-                default: break;
-            }
-            return S;
-        }
-
-
-
-        public int Error => error;
-        public string Number
-        {
-            get
-            {
-                return number;
-            }
-            set
-            {
-                number = value;
-            }
-        }
-        public bool IsNumberZero => number == ZERO;
-
-
-        public enum State
-        {
-            EditLeft,
-            EditRight,
-            Choose,
-            Print,
         }
     }
 }

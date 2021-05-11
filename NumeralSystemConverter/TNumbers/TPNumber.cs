@@ -4,15 +4,14 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using NumeralSystemConverter.Converter;
+using static NumeralSystemConverter.TNumbers.Constants;
 
-namespace NumeralSystemConverter
+namespace NumeralSystemConverter.TNumbers
 {
-    class TPNumber
+    class TPNumber : TANumber
     {
-        private const int MIN_RADIX = 2;
-        private const int MAX_RADIX = 16;
-
-        public static string zero = "0";
+        private const int DEFAULT_RADIX = 10;
+        private const int DEFAULT_ERROR_LENGTH = 0;
 
         private string value;
         private int radix;
@@ -20,6 +19,10 @@ namespace NumeralSystemConverter
 
 
         public TPNumber() { }
+        public TPNumber(double value) : this(value, DEFAULT_RADIX, DEFAULT_ERROR_LENGTH)
+        {
+
+        }
         public TPNumber(double value, int radix, int errorLength)
         {
             if (radix < MIN_RADIX || radix > MAX_RADIX)
@@ -41,58 +44,58 @@ namespace NumeralSystemConverter
         }
 
 
-        public TPNumber Copy()
+        public override TANumber Copy()
         {
             return new TPNumber(value, Convert.ToString(radix), Convert.ToString(errorLength));
         }
-        public TPNumber Add(TPNumber otherNumber)
+        public override TANumber Add(TANumber otherNumber)
         {
             TPNumber result = new TPNumber();
 
-            result.errorLength = otherNumber.errorLength + errorLength;
-            double sum = ConverterTo10.Convert(Convert.ToString(otherNumber.value), otherNumber.radix) +
+            result.errorLength = otherNumber.ErrorLengthNumber + errorLength;
+            double sum = ConverterTo10.Convert(Convert.ToString(otherNumber.ValueNumber), otherNumber.RadixNumber) +
                 ConverterTo10.Convert(Convert.ToString(value), radix);
-            result.value = Convert.ToString(ConverterFrom10.Convert(sum, otherNumber.radix, result.errorLength));
-            result.radix = otherNumber.radix;
-            result.errorLength = Math.Max(otherNumber.errorLength, errorLength);
+            result.value = Convert.ToString(ConverterFrom10.Convert(sum, otherNumber.RadixNumber, result.errorLength));
+            result.radix = otherNumber.RadixNumber;
+            result.errorLength = Math.Max(otherNumber.ErrorLengthNumber, errorLength);
 
             return result;
         }
-        public TPNumber Multiply(TPNumber otherNumber)
+        public override TANumber Multiply(TANumber otherNumber)
         {
             TPNumber result = new TPNumber();
 
-            result.errorLength = otherNumber.errorLength + errorLength;
-            result.value = Convert.ToString(ConverterFrom10.Convert(ConverterTo10.Convert(Convert.ToString(otherNumber.value), otherNumber.radix) *
-                ConverterTo10.Convert(Convert.ToString(value), radix), otherNumber.radix, result.errorLength));
-            result.radix = otherNumber.radix;
+            result.errorLength = otherNumber.ErrorLengthNumber + errorLength;
+            result.value = Convert.ToString(ConverterFrom10.Convert(ConverterTo10.Convert(Convert.ToString(otherNumber.ValueNumber), otherNumber.RadixNumber) *
+                ConverterTo10.Convert(Convert.ToString(value), radix), otherNumber.RadixNumber, result.errorLength));
+            result.radix = otherNumber.RadixNumber;
 
             return result;
         }
-        public TPNumber Subtract(TPNumber otherNumber)
+        public override TANumber Subtract(TANumber otherNumber)
         {
             TPNumber result = new TPNumber();
 
-            result.errorLength = otherNumber.errorLength + errorLength;
+            result.errorLength = otherNumber.ErrorLengthNumber + errorLength;
             result.value = Convert.ToString(ConverterFrom10.Convert(ConverterTo10.Convert(Convert.ToString(value), radix) -
-                ConverterTo10.Convert(Convert.ToString(otherNumber.value), otherNumber.radix), otherNumber.radix, result.errorLength));
-            result.radix = otherNumber.radix;
-            result.errorLength = Math.Max(otherNumber.errorLength, errorLength);
+                ConverterTo10.Convert(Convert.ToString(otherNumber.ValueNumber), otherNumber.RadixNumber), otherNumber.RadixNumber, result.errorLength));
+            result.radix = otherNumber.RadixNumber;
+            result.errorLength = Math.Max(otherNumber.ErrorLengthNumber, errorLength);
 
             return result;
         }
-        public TPNumber Divide(TPNumber otherNumber)
+        public override TANumber Divide(TANumber otherNumber)
         {
             TPNumber result = new TPNumber();
 
-            result.errorLength = otherNumber.errorLength + errorLength;
+            result.errorLength = otherNumber.ErrorLengthNumber + errorLength;
             result.value = Convert.ToString(ConverterFrom10.Convert(ConverterTo10.Convert(Convert.ToString(value), radix) /
-                ConverterTo10.Convert(Convert.ToString(otherNumber.value), otherNumber.radix), otherNumber.radix, result.errorLength));
-            result.radix = otherNumber.radix;
+                ConverterTo10.Convert(Convert.ToString(otherNumber.ValueNumber), otherNumber.RadixNumber), otherNumber.RadixNumber, result.errorLength));
+            result.radix = otherNumber.RadixNumber;
 
             return result;
         }
-        public TPNumber Inverse()
+        public override TANumber Inverse()
         {
             errorLength = 15;
 
@@ -101,7 +104,7 @@ namespace NumeralSystemConverter
 
             return result;
         }
-        public TPNumber Square()
+        public override TANumber Square()
         {
             errorLength = 15;
 
@@ -110,16 +113,23 @@ namespace NumeralSystemConverter
 
             return result;
         }
+        public override bool Equals(TANumber other)
+        {
+            return value == (other as TPNumber).value && radix == (other as TPNumber).radix;
+        }
+        public override string ToString()
+        {
+            return value.ToString();
+        }
 
-
-        public double ValueNumber
+        public override double ValueNumber
         {
             get
             {
                 return ConverterTo10.Convert(value, radix);
             }
         }
-        public string ValueString
+        public override string ValueString
         {
             get
             {
@@ -130,8 +140,7 @@ namespace NumeralSystemConverter
                 this.value = value;
             }
         }
-
-        public int RadixNumber
+        public override int RadixNumber
         {
             get
             {
@@ -145,7 +154,7 @@ namespace NumeralSystemConverter
                 }
             }
         }
-        public string RadixString
+        public override string RadixString
         {
             get
             {
@@ -160,8 +169,7 @@ namespace NumeralSystemConverter
                 }
             }
         }
-
-        public int ErrorLengthNumber
+        public override int ErrorLengthNumber
         {
             get
             {
@@ -175,7 +183,7 @@ namespace NumeralSystemConverter
                 }
             }
         }
-        public string ErrorLengthString
+        public override string ErrorLengthString
         {
             get
             {
@@ -190,5 +198,6 @@ namespace NumeralSystemConverter
                 }
             }
         }
+        public override bool IsZero => value == zero;
     }
 }

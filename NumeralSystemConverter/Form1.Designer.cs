@@ -30,7 +30,7 @@
         {
             this.sourceNumber = new System.Windows.Forms.TextBox();
             this.sourceRadix = new System.Windows.Forms.NumericUpDown();
-            this.label2 = new System.Windows.Forms.Label();
+            this.sourceRadixLabel = new System.Windows.Forms.Label();
             this.button2 = new System.Windows.Forms.Button();
             this.button3 = new System.Windows.Forms.Button();
             this.button4 = new System.Windows.Forms.Button();
@@ -52,6 +52,10 @@
             this.button20 = new System.Windows.Forms.Button();
             this.button1 = new System.Windows.Forms.Button();
             this.toolStrip1 = new System.Windows.Forms.ToolStrip();
+            this.toolStripDropDownButton1 = new System.Windows.Forms.ToolStripDropDownButton();
+            this.числоСPССToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.деситичнаяДробьToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.комплексноеЧислоToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripLabel1 = new System.Windows.Forms.ToolStripLabel();
             this.toolStripLabel2 = new System.Windows.Forms.ToolStripLabel();
             this.button21 = new System.Windows.Forms.Button();
@@ -66,6 +70,8 @@
             this.button30 = new System.Windows.Forms.Button();
             this.button31 = new System.Windows.Forms.Button();
             this.button32 = new System.Windows.Forms.Button();
+            this.button33 = new System.Windows.Forms.Button();
+            this.button34 = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.sourceRadix)).BeginInit();
             this.toolStrip1.SuspendLayout();
             this.SuspendLayout();
@@ -107,15 +113,15 @@
             0});
             this.sourceRadix.ValueChanged += new System.EventHandler(this.sourceRadix_ValueChanged);
             // 
-            // label2
+            // sourceRadixLabel
             // 
-            this.label2.AutoSize = true;
-            this.label2.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label2.Location = new System.Drawing.Point(229, 66);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(71, 15);
-            this.label2.TabIndex = 3;
-            this.label2.Text = "Основание";
+            this.sourceRadixLabel.AutoSize = true;
+            this.sourceRadixLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.sourceRadixLabel.Location = new System.Drawing.Point(229, 66);
+            this.sourceRadixLabel.Name = "sourceRadixLabel";
+            this.sourceRadixLabel.Size = new System.Drawing.Size(71, 15);
+            this.sourceRadixLabel.TabIndex = 3;
+            this.sourceRadixLabel.Text = "Основание";
             // 
             // button2
             // 
@@ -363,6 +369,7 @@
             // toolStrip1
             // 
             this.toolStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.toolStripDropDownButton1,
             this.toolStripLabel1,
             this.toolStripLabel2});
             this.toolStrip1.Location = new System.Drawing.Point(0, 0);
@@ -370,6 +377,40 @@
             this.toolStrip1.Size = new System.Drawing.Size(349, 25);
             this.toolStrip1.TabIndex = 29;
             this.toolStrip1.Text = "toolStrip1";
+            // 
+            // toolStripDropDownButton1
+            // 
+            this.toolStripDropDownButton1.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
+            this.toolStripDropDownButton1.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.числоСPССToolStripMenuItem,
+            this.деситичнаяДробьToolStripMenuItem,
+            this.комплексноеЧислоToolStripMenuItem});
+            this.toolStripDropDownButton1.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.toolStripDropDownButton1.Name = "toolStripDropDownButton1";
+            this.toolStripDropDownButton1.Size = new System.Drawing.Size(40, 22);
+            this.toolStripDropDownButton1.Text = "Вид";
+            this.toolStripDropDownButton1.Click += new System.EventHandler(this.ВидToolStripLabel3_Click);
+            // 
+            // числоСPССToolStripMenuItem
+            // 
+            this.числоСPССToolStripMenuItem.Name = "числоСPССToolStripMenuItem";
+            this.числоСPССToolStripMenuItem.Size = new System.Drawing.Size(186, 22);
+            this.числоСPССToolStripMenuItem.Text = "Число с p СС";
+            this.числоСPССToolStripMenuItem.Click += new System.EventHandler(this.числоСPССToolStripMenuItem_Click);
+            // 
+            // деситичнаяДробьToolStripMenuItem
+            // 
+            this.деситичнаяДробьToolStripMenuItem.Name = "деситичнаяДробьToolStripMenuItem";
+            this.деситичнаяДробьToolStripMenuItem.Size = new System.Drawing.Size(186, 22);
+            this.деситичнаяДробьToolStripMenuItem.Text = "Деситичная дробь";
+            this.деситичнаяДробьToolStripMenuItem.Click += new System.EventHandler(this.деситичнаяДробьToolStripMenuItem_Click);
+            // 
+            // комплексноеЧислоToolStripMenuItem
+            // 
+            this.комплексноеЧислоToolStripMenuItem.Name = "комплексноеЧислоToolStripMenuItem";
+            this.комплексноеЧислоToolStripMenuItem.Size = new System.Drawing.Size(186, 22);
+            this.комплексноеЧислоToolStripMenuItem.Text = "Комплексное число";
+            this.комплексноеЧислоToolStripMenuItem.Click += new System.EventHandler(this.комплексноеЧислоToolStripMenuItem_Click);
             // 
             // toolStripLabel1
             // 
@@ -541,11 +582,37 @@
             this.button32.UseVisualStyleBackColor = true;
             this.button32.Click += new System.EventHandler(this.button_Click);
             // 
+            // button33
+            // 
+            this.button33.Font = new System.Drawing.Font("Microsoft Sans Serif", 16F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.button33.Location = new System.Drawing.Point(8, 391);
+            this.button33.Name = "button33";
+            this.button33.Size = new System.Drawing.Size(50, 50);
+            this.button33.TabIndex = 42;
+            this.button33.Tag = "28";
+            this.button33.Text = "─";
+            this.button33.UseVisualStyleBackColor = true;
+            this.button33.Visible = false;
+            // 
+            // button34
+            // 
+            this.button34.Font = new System.Drawing.Font("Microsoft Sans Serif", 16F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.button34.Location = new System.Drawing.Point(8, 390);
+            this.button34.Name = "button34";
+            this.button34.Size = new System.Drawing.Size(50, 50);
+            this.button34.TabIndex = 43;
+            this.button34.Tag = "29";
+            this.button34.Text = "i";
+            this.button34.UseVisualStyleBackColor = true;
+            this.button34.Visible = false;
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(349, 461);
+            this.Controls.Add(this.button34);
+            this.Controls.Add(this.button33);
             this.Controls.Add(this.button32);
             this.Controls.Add(this.button31);
             this.Controls.Add(this.button30);
@@ -579,7 +646,7 @@
             this.Controls.Add(this.button4);
             this.Controls.Add(this.button3);
             this.Controls.Add(this.button2);
-            this.Controls.Add(this.label2);
+            this.Controls.Add(this.sourceRadixLabel);
             this.Controls.Add(this.sourceRadix);
             this.Controls.Add(this.sourceNumber);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
@@ -599,7 +666,7 @@
         #endregion
         private System.Windows.Forms.TextBox sourceNumber;
         private System.Windows.Forms.NumericUpDown sourceRadix;
-        private System.Windows.Forms.Label label2;
+        private System.Windows.Forms.Label sourceRadixLabel;
         private System.Windows.Forms.Button button2;
         private System.Windows.Forms.Button button3;
         private System.Windows.Forms.Button button4;
@@ -635,6 +702,12 @@
         private System.Windows.Forms.Button button30;
         private System.Windows.Forms.Button button31;
         private System.Windows.Forms.Button button32;
+        private System.Windows.Forms.ToolStripDropDownButton toolStripDropDownButton1;
+        private System.Windows.Forms.ToolStripMenuItem числоСPССToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem деситичнаяДробьToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem комплексноеЧислоToolStripMenuItem;
+        private System.Windows.Forms.Button button33;
+        private System.Windows.Forms.Button button34;
     }
 }
 

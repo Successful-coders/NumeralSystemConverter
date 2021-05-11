@@ -5,6 +5,8 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using NumeralSystemConverter.Converter;
+using NumeralSystemConverter.Editors;
+using NumeralSystemConverter.TNumbers;
 
 namespace NumeralSystemConverter
 {
@@ -13,9 +15,10 @@ namespace NumeralSystemConverter
         private const int DEFAULT_RADIX = 10;
         private const int DEFAULT_ERROR = 10;
 
-        private Editor editor = new Editor();
+        private PEditor editor = new PEditor();
         public TProcessor<TPNumber> processor = new TProcessor<TPNumber>(DEFAULT_RADIX);
         private Memory<TPNumber> memory = new Memory<TPNumber>();
+        private Memory<TPNumber>.FState memoryState = Memory<TPNumber>.FState.Off;
         private TPNumber number = new TPNumber(0, 10, 0);
         private History history = new History();
         private int prevCommand = -1;
@@ -30,7 +33,7 @@ namespace NumeralSystemConverter
         }
 
 
-        public string DoCommand(int commandIndex, ref string clipboard, ref Memory<TPNumber>.FState memoryState)
+        public string DoCommand(int commandIndex, ref string clipboard)
         {
             string str;
             SetRadix();
@@ -41,9 +44,9 @@ namespace NumeralSystemConverter
                     str =  DoEditorCommand(commandIndex);
                     break;
                 case int n when (n >= 21 && n <= 24):
-                    if (processor.State != (TProcessor<TPNumber>.OperationState)commandIndex - 20 && editor.state == Editor.State.EditRight)
+                    if (processor.State != (TProcessor<TPNumber>.OperationState)commandIndex - 20 && editor.state == AEditor.State.EditRight)
                         str = DoExpresion(commandIndex - 20);
-                    else if (editor.state == Editor.State.Choose)
+                    else if (editor.state == AEditor.State.Choose)
                         str = DoExpresion((int)processor.State);
                     str = Prepare(editor.Number, commandIndex - 20);
                     break;
@@ -52,15 +55,15 @@ namespace NumeralSystemConverter
                     break;
                 case int n when (n >= 27 && n <= 27):
                     if (prevCommand >= 21 && prevCommand <= 24)
-                        editor.state = Editor.State.EditRight;
+                        editor.state = AEditor.State.EditRight;
                     str = DoExpresion(prevBinaryOperation);
-                    editor.state = Editor.State.EditLeft;
+                    editor.state = AEditor.State.EditLeft;
                     break;
                 case int n when (n >= 28 && n <= 28):
                     str = Reset();
                     break;
                 case int n when (n >= 29 && n <= 33):
-                    str = DoMemoryCommand(commandIndex - 29, ref memoryState);
+                    str = DoMemoryCommand(commandIndex - 29);
                     break;
                 case int n when (n >= 34 && n <= 36):
                     str = DoClipboardCommand(commandIndex -34, ref clipboard);
@@ -70,6 +73,8 @@ namespace NumeralSystemConverter
                     break;
             }
 
+            if (prevCommand == 18 && commandIndex == 18)
+                Reset();
             prevCommand = commandIndex;
             return str;
         }
@@ -93,7 +98,7 @@ namespace NumeralSystemConverter
             string res = "";
             string record = "";
 
-            if (editor.state == Editor.State.EditRight || editor.state == Editor.State.Choose)
+            if (editor.state == AEditor.State.EditRight || editor.state == AEditor.State.Choose)
             {
                 processor.RightOperand.ValueString = number;
                 if (commandIndex == 6)
@@ -108,9 +113,9 @@ namespace NumeralSystemConverter
                 }
                 res += processor.RightOperand.ValueNumber;
             }
-            else if (editor.state == Editor.State.EditLeft)
+            else if (editor.state == AEditor.State.EditLeft)
             {
-                if (editor.state != Editor.State.Print)
+                if (editor.state != AEditor.State.Print)
                     processor.LeftOperand.ValueString = number;
 
                 if (commandIndex == 6)
@@ -127,10 +132,6 @@ namespace NumeralSystemConverter
             }
             else
             {
-                //number = DoExpresion(prevOperation);
-
-               // editor.state = Editor.State.EditRight;
-
                 processor.RightOperand.ValueString = number;
 
                 processor.State = (TProcessor<TPNumber>.OperationState)commandIndex;
@@ -149,8 +150,8 @@ namespace NumeralSystemConverter
 
             editor.Number = res;
 
-            if (editor.state != Editor.State.EditRight && editor.state != Editor.State.Choose)
-                editor.state = Editor.State.Print;
+            if (editor.state != AEditor.State.EditRight && editor.state != AEditor.State.Choose)
+                editor.state = AEditor.State.Print;
 
             record += res;
             history.AddRecord(new Record(record));
@@ -173,7 +174,7 @@ namespace NumeralSystemConverter
             {
                 if (processor.State == TProcessor<TPNumber>.OperationState.Divide && number == "0")
                 {
-                    editor.state = Editor.State.EditLeft;
+                    editor.state = AEditor.State.EditLeft;
                     return "Деление на ноль!";
                 }
 
@@ -181,7 +182,7 @@ namespace NumeralSystemConverter
 
                 switch (editor.state)
                 {
-                    case Editor.State.Choose:
+                    case AEditor.State.Choose:
                         if (number != "")
                         {
                             processor.RightOperand.ValueString = number;
@@ -191,8 +192,7 @@ namespace NumeralSystemConverter
                             processor.RightOperand.ValueString = processor.LeftOperand.ValueString;
 
                         break;
-                    case Editor.State.EditRight:
-                        processor.RightOperand.ValueString = processor.LeftOperand.ValueString;
+                    case AEditor.State.EditRight:
                         break;
                     case 0:
                         break;
@@ -220,7 +220,7 @@ namespace NumeralSystemConverter
                 rec += " = " + processor.LeftOperand.ValueString;
                 history.AddRecord(new Record(rec));
                 editor.Number = result;
-                editor.state = Editor.State.Print;
+                editor.state = AEditor.State.Print;
             }
 
             return result == "" ? editor.Number : result;
@@ -229,14 +229,15 @@ namespace NumeralSystemConverter
         {
             State = StateType.Starting;
             number.RadixNumber = Radix;
+            processor.State = TProcessor<TPNumber>.OperationState.None;
 
             return number.ValueString;
         }
-        public string DoMemoryCommand(int commandIndex, ref Memory<TPNumber>.FState state)
+        public string DoMemoryCommand(int commandIndex)
         {
             State = StateType.ValueDone;//TODO
 
-            memory.State = state;
+            memory.State = memoryState;
 
             string str = editor.Number;
             TPNumber buf = new TPNumber(str, processor.LeftOperand.RadixString, "0");
@@ -276,7 +277,7 @@ namespace NumeralSystemConverter
                     }
             }
 
-            state = memory.State;
+            memoryState = memory.State;
 
             return editor.Number;
         }
@@ -323,8 +324,8 @@ namespace NumeralSystemConverter
                 res = processor.RightOperand.ValueNumber.ToString();
                 editor.Number = res;
             }
-            if (editor.state != Editor.State.EditLeft)
-                editor.state = Editor.State.EditRight;
+            if (editor.state != AEditor.State.EditLeft)
+                editor.state = AEditor.State.EditRight;
 
             return res;
         }
@@ -333,12 +334,12 @@ namespace NumeralSystemConverter
             string result = "";
             string record = "";
 
-            if (editor.state != Editor.State.Print)
+            if (editor.state != AEditor.State.Print)
             {
-                if (editor.state == Editor.State.EditRight)
+                if (editor.state == AEditor.State.EditRight)
                 {
-                    processor.LeftOperand = processor.RightOperand.Copy();
-                    processor.RightOperand = processor.LeftOperand.Copy();
+                    processor.LeftOperand = (TPNumber)processor.RightOperand.Copy();
+                    processor.RightOperand = (TPNumber)processor.LeftOperand.Copy();
 
                     record += processor.LeftOperand.ValueNumber;
                     switch ((int)processor.State)
@@ -351,29 +352,29 @@ namespace NumeralSystemConverter
                     record += processor.RightOperand.ValueString;
                     processor.Operate();
                     result = processor.LeftOperand.ValueString;
-                    editor.state = Editor.State.Choose;
+                    editor.state = AEditor.State.Choose;
                 }
                 else
                 {
-                    if (editor.state == Editor.State.Choose)
+                    if (editor.state == AEditor.State.Choose)
                     {
                         processor.RightOperand.ValueString = number;
                         result = processor.LeftOperand.ValueString;
-                        editor.state = Editor.State.EditRight;
+                        editor.state = AEditor.State.EditRight;
                     }
                     else
                     {
                         processor.LeftOperand.ValueString = number;
                         result = number;
-                        editor.state = Editor.State.Choose;
+                        editor.state = AEditor.State.Choose;
                     }
                 }
             }
             else
             {
-                processor.RightOperand = processor.LeftOperand.Copy();
+                processor.RightOperand = (TPNumber)processor.LeftOperand.Copy();
                 result = processor.LeftOperand.ValueString;
-                editor.state = Editor.State.EditRight;
+                editor.state = AEditor.State.EditRight;
             }
 
             editor.Clear();
@@ -382,7 +383,7 @@ namespace NumeralSystemConverter
             if (record.Length >= 9)
                 history.AddRecord(new Record(record));
 
-            editor.state = Editor.State.Choose;
+            editor.state = AEditor.State.Choose;
             processor.State = (TProcessor<TPNumber>.OperationState)command;
             prevOperation = (int)processor.State;
             prevBinaryOperation = (int)processor.State;
@@ -391,7 +392,7 @@ namespace NumeralSystemConverter
         }
         private void SetRadix()
         {
-            if (editor.state == Editor.State.Choose || editor.state == Editor.State.EditRight || editor.state == Editor.State.Print)
+            if (editor.state == AEditor.State.Choose || editor.state == AEditor.State.EditRight || editor.state == AEditor.State.Print)
             {
                 processor.RightOperand.RadixNumber = Radix;
             }
@@ -406,7 +407,7 @@ namespace NumeralSystemConverter
         //Свойство для чтения и записи состояние Конвертера.
         public StateType State { get; set; }
         public int Radix { get; set; }
-        public Editor Editor => editor;
+        public PEditor Editor => editor;
         public History History => history;
 
         //Точность представления результата.
