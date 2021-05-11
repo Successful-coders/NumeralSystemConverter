@@ -7,25 +7,17 @@ using System.Threading.Tasks;
 
 namespace NumeralSystemConverter
 {
-    class TProcessor<T>
-        where T : TPNumber
+    class TProcessor
     {
-        private T leftOperand;
-        private T rightOperand;
+        private TANumber leftOperand;
+        private TANumber rightOperand;
         private OperationState state;
-
-
-        public TProcessor(int radix)
-        {
-            leftOperand = new TPNumber(0, radix, 0) as T;
-            rightOperand = new TPNumber(0, radix, 0) as T;
-        }
 
 
         public void ResetProcessor()
         {
-            leftOperand = new TPNumber(0, 10, 0) as T;
-            rightOperand = new TPNumber(0, 10, 0) as T;
+            leftOperand = new TPNumber(0, 10, 0);
+            rightOperand = new TPNumber(0, 10, 0);
 
             ResetOperation();
         }
@@ -40,19 +32,19 @@ namespace NumeralSystemConverter
 
             if (state == OperationState.Add)
             {
-                leftOperand = (T)leftOperand.Add(rightOperand);
+                leftOperand = leftOperand.Add(rightOperand);
             }
             else if (state == OperationState.Subtract)
             {
-                leftOperand = (T)leftOperand.Subtract(rightOperand);
+                leftOperand = leftOperand.Subtract(rightOperand);
             }
             else if (state == OperationState.Multiply)
             {
-                leftOperand = (T)leftOperand.Multiply(rightOperand);
+                leftOperand = leftOperand.Multiply(rightOperand);
             }
             else if (state == OperationState.Divide)
             {
-                leftOperand = (T)leftOperand.Divide(rightOperand);
+                leftOperand = leftOperand.Divide(rightOperand);
             }
         }
         public void CalculateFunction(bool isRignt)
@@ -64,29 +56,29 @@ namespace NumeralSystemConverter
             {
                 if (state == OperationState.Inverse)
                 {
-                    leftOperand = (T)leftOperand.Inverse();
+                    leftOperand = leftOperand.Inverse();
                 }
                 if (state == OperationState.Square)
                 {
-                    leftOperand = (T)leftOperand.Square();
+                    leftOperand = leftOperand.Square();
                 }
             }
             else
             {
                 if (state == OperationState.Inverse)
                 {
-                    rightOperand = (T)rightOperand.Inverse();
+                    rightOperand = rightOperand.Inverse();
                 }
                 if (state == OperationState.Square)
                 {
-                    rightOperand = (T)rightOperand.Square();
+                    rightOperand = rightOperand.Square();
                 }
             }
         }
 
 
-        public T LeftOperand { get => leftOperand; set => leftOperand = (T)new TPNumber(value.ValueNumber, value.RadixNumber, value.ErrorLengthNumber); }
-        public T RightOperand { get => rightOperand; set => rightOperand = (T)new TPNumber(value.ValueNumber, value.RadixNumber, value.ErrorLengthNumber); }
+        public TANumber LeftOperand { get => leftOperand; set => leftOperand = value.Copy(); }
+        public TANumber RightOperand { get => rightOperand; set => rightOperand = value.Copy(); }
         public OperationState State { get => state; set => state = value; }
 
 

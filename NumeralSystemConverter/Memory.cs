@@ -7,56 +7,54 @@ using System.Threading.Tasks;
 
 namespace NumeralSystemConverter
 {
-    class Memory<T>
-        where T : TPNumber
+    class Memory
     {
-        private T number;
+        private TANumber number;
 
 
         public Memory()
         {
             State = FState.Off;
-            number = (T)new TPNumber(0, 10, 1);
+            number = new TPNumber(0, 10, 1);
         }
 
 
-        public void Store(T number)
+        public void Store(TANumber number)
         {
-            this.number = (T)number.Copy();
-
-            State = FState.On;
-        }
-        public T Get()
-        {
-            T tmp;
-            tmp = number;
-            return tmp;
-        }
-        public void Add(T otherNumber)
-        {
-            if (State == FState.Off)
-                number = (T)new TPNumber(otherNumber.ValueNumber, otherNumber.RadixNumber, otherNumber.ErrorLengthNumber);
-            else
-                number = (T)otherNumber.Add(number);
+            this.number = number.Copy();
 
             State = FState.On;
         }
-        public void Remove(T otherNumber)
+        public TANumber Get()
+        {
+            return number.Copy();
+        }
+        public void Add(TANumber otherNumber)
         {
             if (State == FState.Off)
-                number = (T)new TPNumber(-otherNumber.ValueNumber, otherNumber.RadixNumber, otherNumber.ErrorLengthNumber);
+                number = otherNumber.Copy();
             else
-                number = (T)otherNumber.Subtract(number);
+                number = otherNumber.Add(number);
+
+            State = FState.On;
+        }
+        public void Remove(TANumber otherNumber)
+        {
+            if (State == FState.Off)
+                number = otherNumber.Copy();
+            else
+                number = otherNumber.Subtract(number);
 
             State = FState.On;
         }
         public void Clear()
         {
             State = FState.Off;
+            number = new TPNumber(0, 10, 1);
         }
 
 
-        public T Number => number;
+        public TANumber Number => number;
         public FState State { set; get; }
 
 

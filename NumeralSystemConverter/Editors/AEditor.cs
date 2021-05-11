@@ -28,23 +28,55 @@ namespace NumeralSystemConverter.Editors
         /// <summary>
         /// Добавить ноль.
         /// </summary>
-        public abstract string AddZero();
+        public virtual string AddZero()
+        {
+            number += ZERO;
+            return number;
+        }
         /// <summary>
         /// Добавить разделитель.
         /// </summary>
-        public abstract string AddPoint();
+        public virtual string AddPoint()
+        {
+            number += POINT_CHAR;
+            return number;
+        }
         /// <summary>
         /// Удалить символ справа
         /// </summary>
-        public abstract string RemoveLastSymbol();
+        public virtual string RemoveLastSymbol()
+        {
+            if (number.Length > 0 && number != "0")
+                number = number.Remove(number.Length - 1);
+            return number;
+        }
         /// <summary>
         /// Очистить редактируемое число.
         /// </summary>
-        public abstract string Clear();
+        public virtual string Clear()
+        {
+            number = ZERO;
+            return number;
+        }
         /// <summary>
         /// Изменить знак.
         /// </summary>
-        public abstract string ChangeSign();
+        public virtual string ChangeSign()
+        {
+            if (number.Length > 0 && number != ZERO)
+            {
+                if (number[0] == '-')
+                {
+                    number = number.Substring(1);
+                }
+                else
+                {
+                    number = '-' + number;
+                }
+            }
+
+            return number;
+        }
         /// <summary>
         /// Выполнить команду редактирования.
         /// </summary>

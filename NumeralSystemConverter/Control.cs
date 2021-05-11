@@ -15,36 +15,39 @@ namespace NumeralSystemConverter
         private const int DEFAULT_RADIX = 10;
         private const int DEFAULT_ERROR = 10;
 
-        private PEditor editor = new PEditor();
-        public TProcessor<TPNumber> processor = new TProcessor<TPNumber>(DEFAULT_RADIX);
-        private Memory<TPNumber> memory = new Memory<TPNumber>();
-        private Memory<TPNumber>.FState memoryState = Memory<TPNumber>.FState.Off;
-        private TPNumber number = new TPNumber(0, 10, 0);
+        private AEditor editor = new PEditor();
+        public TProcessor processor = new TProcessor();
+        private Memory memory = new Memory();
+        private Memory.FState memoryState = Memory.FState.Off;
+        private TPNumber number = new TPNumber(0, DEFAULT_RADIX, 0);
         private History history = new History();
         private int prevCommand = -1;
         private int prevOperation;
         private int prevBinaryOperation;
+        private string clipboard;
 
 
-        public Control()
+        public Control(AEditor editor)
         {
+            this.editor = editor;
+
             State = StateType.Starting;
             Radix = DEFAULT_RADIX;
         }
 
 
-        public string DoCommand(int commandIndex, ref string clipboard)
+        public string DoCommand(int commandIndex)
         {
             string str;
             SetRadix();
 
             switch (commandIndex)
             {
-                case int n when (n >= 0 && n <= 20):
+                case int n when ((n >= 0 && n <= 20) || n == 28 || ((editor is CEditor) && n == 40)):
                     str =  DoEditorCommand(commandIndex);
                     break;
                 case int n when (n >= 21 && n <= 24):
-                    if (processor.State != (TProcessor<TPNumber>.OperationState)commandIndex - 20 && editor.state == AEditor.State.EditRight)
+                    if (processor.State != (TProcessor.OperationState)commandIndex - 20 && editor.state == AEditor.State.EditRight)
                         str = DoExpresion(commandIndex - 20);
                     else if (editor.state == AEditor.State.Choose)
                         str = DoExpresion((int)processor.State);
@@ -59,14 +62,11 @@ namespace NumeralSystemConverter
                     str = DoExpresion(prevBinaryOperation);
                     editor.state = AEditor.State.EditLeft;
                     break;
-                case int n when (n >= 28 && n <= 28):
-                    str = Reset();
-                    break;
                 case int n when (n >= 29 && n <= 33):
                     str = DoMemoryCommand(commandIndex - 29);
                     break;
                 case int n when (n >= 34 && n <= 36):
-                    str = DoClipboardCommand(commandIndex -34, ref clipboard);
+                    str = DoClipboardCommand(commandIndex - 34, ref clipboard);
                     break;
                 default:
                     str = number.ValueString;
@@ -82,6 +82,11 @@ namespace NumeralSystemConverter
         {
             State = StateType.Editing;
 
+            if ((editor is CEditor) && commandIndex == 40)
+            {
+                return editor.Edit(commandIndex);
+            }
+
             if (prevCommand == 27 || (prevCommand >= 21 && prevCommand <= 24))
                 editor.Clear();
 
@@ -91,12 +96,18 @@ namespace NumeralSystemConverter
         {
             State = StateType.FunctionDone;
 
-            processor.State = (TProcessor<TPNumber>.OperationState)commandIndex;
+            processor.State = (TProcessor.OperationState)commandIndex;
 
             string number = editor.Number;
 
             string res = "";
             string record = "";
+
+            if (number.Contains("/0"))
+            {
+                editor.state = AEditor.State.EditLeft;
+                return "Деление на ноль!";
+            }
 
             if (editor.state == AEditor.State.EditRight || editor.state == AEditor.State.Choose)
             {
@@ -111,7 +122,7 @@ namespace NumeralSystemConverter
                     record += "1 / " + number + " = ";
                     processor.CalculateFunction(true);
                 }
-                res += processor.RightOperand.ValueNumber;
+                res = processor.RightOperand.ValueString;
             }
             else if (editor.state == AEditor.State.EditLeft)
             {
@@ -128,13 +139,13 @@ namespace NumeralSystemConverter
                     record += "1 / " + number + " = ";
                     processor.CalculateFunction(false);
                 }
-                res += processor.LeftOperand.ValueNumber;
+                res = processor.LeftOperand.ValueString;
             }
             else
             {
                 processor.RightOperand.ValueString = number;
 
-                processor.State = (TProcessor<TPNumber>.OperationState)commandIndex;
+                processor.State = (TProcessor.OperationState)commandIndex;
                 if (commandIndex == 6)
                 {
                     record = "Sqr( " + number + " ) = ";
@@ -145,12 +156,12 @@ namespace NumeralSystemConverter
                     record += "1 / " + number + " = ";
                     processor.CalculateFunction(true);
                 }
-                res += processor.RightOperand.ValueNumber;
+                res = processor.RightOperand.ValueString;
             }
 
             editor.Number = res;
 
-            if (editor.state != AEditor.State.EditRight && editor.state != AEditor.State.Choose)
+            if (editor.state != AEditor.State.EditRight && editor.state != AEditor.State.EditLeft && editor.state != AEditor.State.Choose)
                 editor.state = AEditor.State.Print;
 
             record += res;
@@ -164,15 +175,15 @@ namespace NumeralSystemConverter
         {
             State = StateType.ExpressionDone;
 
-            processor.State = (TProcessor<TPNumber>.OperationState)commandIndex;
+            processor.State = (TProcessor.OperationState)commandIndex;
 
             string number = editor.Number;
             string result = "";
 
             processor.RightOperand.ErrorLengthNumber = processor.LeftOperand.ErrorLengthNumber = Error;
-            if (processor.State != TProcessor<TPNumber>.OperationState.None)
+            if (processor.State != TProcessor.OperationState.None)
             {
-                if (processor.State == TProcessor<TPNumber>.OperationState.Divide && number == "0")
+                if ((processor.State == TProcessor.OperationState.Divide && number == "0") || number.Contains("/0") || processor.LeftOperand.ValueString.Contains("/0"))
                 {
                     editor.state = AEditor.State.EditLeft;
                     return "Деление на ноль!";
@@ -186,7 +197,7 @@ namespace NumeralSystemConverter
                         if (number != "")
                         {
                             processor.RightOperand.ValueString = number;
-                            processor.State = (TProcessor<TPNumber>.OperationState)prevBinaryOperation;
+                            processor.State = (TProcessor.OperationState)prevBinaryOperation;
                         }
                         else
                             processor.RightOperand.ValueString = processor.LeftOperand.ValueString;
@@ -198,7 +209,7 @@ namespace NumeralSystemConverter
                         break;
                     default:
                         processor.RightOperand.ValueString = number;
-                        processor.State = (TProcessor<TPNumber>.OperationState)prevBinaryOperation;
+                        processor.State = (TProcessor.OperationState)prevBinaryOperation;
                         break;
                 }
 
@@ -229,7 +240,7 @@ namespace NumeralSystemConverter
         {
             State = StateType.Starting;
             number.RadixNumber = Radix;
-            processor.State = TProcessor<TPNumber>.OperationState.None;
+            processor.State = TProcessor.OperationState.None;
 
             return number.ValueString;
         }
@@ -283,7 +294,7 @@ namespace NumeralSystemConverter
         }
         public string DoClipboardCommand(int commandIndex, ref string clipboardValue)
         {
-            State = StateType.ValueDone;//TODO
+            State = StateType.ValueDone;//TODOTProcessor
 
             switch (commandIndex)
             {
@@ -312,16 +323,16 @@ namespace NumeralSystemConverter
         {
             string res;
 
-            if (processor.State == TProcessor<TPNumber>.OperationState.None)
+            if (processor.State == TProcessor.OperationState.None)
             {
-                processor.LeftOperand = memory.Number;
-                res = processor.LeftOperand.ValueNumber.ToString();
+                processor.LeftOperand.ValueString = memory.Get().ValueString;
+                res = processor.LeftOperand.ValueString;
                 editor.Number = res;
             }
             else
             {
-                processor.RightOperand = memory.Number;
-                res = processor.RightOperand.ValueNumber.ToString();
+                processor.RightOperand.ValueString = memory.Get().ValueString;
+                res = processor.RightOperand.ValueString;
                 editor.Number = res;
             }
             if (editor.state != AEditor.State.EditLeft)
@@ -356,6 +367,12 @@ namespace NumeralSystemConverter
                 }
                 else
                 {
+                    if (number.Contains("/0"))
+                    {
+                        editor.state = AEditor.State.EditLeft;
+                        return "Деление на ноль!";
+                    }
+
                     if (editor.state == AEditor.State.Choose)
                     {
                         processor.RightOperand.ValueString = number;
@@ -372,7 +389,7 @@ namespace NumeralSystemConverter
             }
             else
             {
-                processor.RightOperand = (TPNumber)processor.LeftOperand.Copy();
+                processor.RightOperand = (TANumber)processor.LeftOperand.Copy();
                 result = processor.LeftOperand.ValueString;
                 editor.state = AEditor.State.EditRight;
             }
@@ -384,7 +401,7 @@ namespace NumeralSystemConverter
                 history.AddRecord(new Record(record));
 
             editor.state = AEditor.State.Choose;
-            processor.State = (TProcessor<TPNumber>.OperationState)command;
+            processor.State = (TProcessor.OperationState)command;
             prevOperation = (int)processor.State;
             prevBinaryOperation = (int)processor.State;
 
@@ -407,7 +424,7 @@ namespace NumeralSystemConverter
         //Свойство для чтения и записи состояние Конвертера.
         public StateType State { get; set; }
         public int Radix { get; set; }
-        public PEditor Editor => editor;
+        public AEditor Editor => editor;
         public History History => history;
 
         //Точность представления результата.

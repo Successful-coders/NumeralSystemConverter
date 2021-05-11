@@ -72,6 +72,7 @@
             this.button32 = new System.Windows.Forms.Button();
             this.button33 = new System.Windows.Forms.Button();
             this.button34 = new System.Windows.Forms.Button();
+            this.button35 = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.sourceRadix)).BeginInit();
             this.toolStrip1.SuspendLayout();
             this.SuspendLayout();
@@ -395,14 +396,14 @@
             // 
             this.числоСPССToolStripMenuItem.Name = "числоСPССToolStripMenuItem";
             this.числоСPССToolStripMenuItem.Size = new System.Drawing.Size(186, 22);
-            this.числоСPССToolStripMenuItem.Text = "Число с p СС";
+            this.числоСPССToolStripMenuItem.Text = "Число СС";
             this.числоСPССToolStripMenuItem.Click += new System.EventHandler(this.числоСPССToolStripMenuItem_Click);
             // 
             // деситичнаяДробьToolStripMenuItem
             // 
             this.деситичнаяДробьToolStripMenuItem.Name = "деситичнаяДробьToolStripMenuItem";
             this.деситичнаяДробьToolStripMenuItem.Size = new System.Drawing.Size(186, 22);
-            this.деситичнаяДробьToolStripMenuItem.Text = "Деситичная дробь";
+            this.деситичнаяДробьToolStripMenuItem.Text = "Десятичная дробь";
             this.деситичнаяДробьToolStripMenuItem.Click += new System.EventHandler(this.деситичнаяДробьToolStripMenuItem_Click);
             // 
             // комплексноеЧислоToolStripMenuItem
@@ -585,7 +586,7 @@
             // button33
             // 
             this.button33.Font = new System.Drawing.Font("Microsoft Sans Serif", 16F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.button33.Location = new System.Drawing.Point(8, 391);
+            this.button33.Location = new System.Drawing.Point(176, 390);
             this.button33.Name = "button33";
             this.button33.Size = new System.Drawing.Size(50, 50);
             this.button33.TabIndex = 42;
@@ -593,24 +594,40 @@
             this.button33.Text = "─";
             this.button33.UseVisualStyleBackColor = true;
             this.button33.Visible = false;
+            this.button33.Click += new System.EventHandler(this.button_Click);
             // 
             // button34
             // 
             this.button34.Font = new System.Drawing.Font("Microsoft Sans Serif", 16F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.button34.Location = new System.Drawing.Point(8, 390);
+            this.button34.Location = new System.Drawing.Point(176, 390);
             this.button34.Name = "button34";
             this.button34.Size = new System.Drawing.Size(50, 50);
             this.button34.TabIndex = 43;
-            this.button34.Tag = "29";
+            this.button34.Tag = "28";
             this.button34.Text = "i";
             this.button34.UseVisualStyleBackColor = true;
             this.button34.Visible = false;
+            this.button34.Click += new System.EventHandler(this.button_Click);
+            // 
+            // button35
+            // 
+            this.button35.Font = new System.Drawing.Font("Microsoft Sans Serif", 16F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.button35.Location = new System.Drawing.Point(8, 391);
+            this.button35.Name = "button35";
+            this.button35.Size = new System.Drawing.Size(50, 50);
+            this.button35.TabIndex = 44;
+            this.button35.Tag = "40";
+            this.button35.Text = "-";
+            this.button35.UseVisualStyleBackColor = true;
+            this.button35.Visible = false;
+            this.button35.Click += new System.EventHandler(this.button_Click);
             // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(349, 461);
+            this.Controls.Add(this.button35);
             this.Controls.Add(this.button34);
             this.Controls.Add(this.button33);
             this.Controls.Add(this.button32);
@@ -708,6 +725,7 @@
         private System.Windows.Forms.ToolStripMenuItem комплексноеЧислоToolStripMenuItem;
         private System.Windows.Forms.Button button33;
         private System.Windows.Forms.Button button34;
+        private System.Windows.Forms.Button button35;
     }
 }
 

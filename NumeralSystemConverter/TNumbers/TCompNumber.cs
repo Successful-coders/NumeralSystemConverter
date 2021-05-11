@@ -12,7 +12,7 @@ namespace NumeralSystemConverter.TNumbers
         private TPNumber imagePart;
 
 
-        public TCompNumber() : base()
+        public TCompNumber() : this(new TPNumber(), new TPNumber())
         {
 
         }
@@ -34,16 +34,16 @@ namespace NumeralSystemConverter.TNumbers
             TPNumber imagePart = new TPNumber(this.imagePart.ValueNumber + (otherNumber as TCompNumber).imagePart.ValueNumber,
                 this.imagePart.RadixNumber, this.imagePart.ErrorLengthNumber);
 
-            return new TFractNumber(realPart, imagePart);
+            return new TCompNumber(realPart, imagePart);
         }
         public override TANumber Multiply(TANumber otherNumber)
         {
             TPNumber realPart = new TPNumber(this.realPart.ValueNumber * (otherNumber as TCompNumber).realPart.ValueNumber -
                 this.imagePart.ValueNumber * (otherNumber as TCompNumber).imagePart.ValueNumber, this.realPart.RadixNumber, this.realPart.ErrorLengthNumber);
             TPNumber imagePart = new TPNumber(this.realPart.ValueNumber * (otherNumber as TCompNumber).imagePart.ValueNumber +
-                this.imagePart.ValueNumber + (otherNumber as TCompNumber).realPart.ValueNumber, this.imagePart.RadixNumber, this.imagePart.ErrorLengthNumber);
+                this.imagePart.ValueNumber * (otherNumber as TCompNumber).realPart.ValueNumber, this.imagePart.RadixNumber, this.imagePart.ErrorLengthNumber);
 
-            return new TFractNumber(realPart, imagePart);
+            return new TCompNumber(realPart, imagePart);
         }
         public override TANumber Subtract(TANumber otherNumber)
         {
@@ -52,7 +52,7 @@ namespace NumeralSystemConverter.TNumbers
             TPNumber imagePart = new TPNumber(this.imagePart.ValueNumber - (otherNumber as TCompNumber).imagePart.ValueNumber,
                 this.imagePart.RadixNumber, this.imagePart.ErrorLengthNumber);
 
-            return new TFractNumber(realPart, imagePart);
+            return new TCompNumber(realPart, imagePart);
         }
         public override TANumber Divide(TANumber otherNumber)
         {
@@ -63,7 +63,7 @@ namespace NumeralSystemConverter.TNumbers
                 (this.imagePart.ValueNumber * this.imagePart.ValueNumber + (otherNumber as TCompNumber).imagePart.ValueNumber * (otherNumber as TCompNumber).imagePart.ValueNumber),
                 this.imagePart.RadixNumber, this.imagePart.ErrorLengthNumber);
 
-            return new TFractNumber(realPart, imagePart);
+            return new TCompNumber(realPart, imagePart);
         }
         public override TANumber Inverse()
         {
@@ -80,16 +80,35 @@ namespace NumeralSystemConverter.TNumbers
         }
         public override string ToString()
         {
-            return realPart + "+ i*" + imagePart;
+            return realPart + " + i*" + imagePart;
         }
 
 
-        public override double ValueNumber => throw new NotImplementedException();
-        public override string ValueString { get => this.ToString(); set => throw new NotImplementedException(); }
-        public override int RadixNumber { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
-        public override string RadixString { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
-        public override int ErrorLengthNumber { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
-        public override string ErrorLengthString { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+        public override double ValueNumber => realPart.ValueNumber;
+        public override string ValueString
+        {
+            get
+            {
+                return this.ToString();
+            }
+            set
+            {
+                string[] stringValues = value.Split(new string[] { " + i*" }, StringSplitOptions.None);
+                realPart = new TPNumber(int.Parse(stringValues[0]));
+                if (stringValues.Length >= 2 && !string.IsNullOrEmpty(stringValues[1]))
+                {
+                    imagePart = new TPNumber(int.Parse(stringValues[1]));
+                }
+                else
+                {
+                    imagePart = new TPNumber(0);
+                }
+            }
+        }
+        public override int RadixNumber { get => 10; set => this.ToString(); }
+        public override string RadixString { get => "10"; set => this.ToString(); }
+        public override int ErrorLengthNumber { get => 0; set => this.ToString(); }
+        public override string ErrorLengthString { get => "0"; set => this.ToString(); }
         public override bool IsZero => realPart.IsZero && imagePart.IsZero;
     }
 }

@@ -38,43 +38,6 @@ namespace NumeralSystemConverter.Editors
             return number;
 
         }
-        public override string AddZero()
-        {
-            number += ZERO;
-            return number;
-        }
-        public override string AddPoint()
-        {
-            number += POINT_CHAR;
-            return number;
-        }
-        public override string RemoveLastSymbol()
-        {
-            if (number.Length > 0 && number != "0")
-                number = number.Remove(number.Length - 1);
-            return number;
-        }
-        public override string Clear()
-        {
-            number = ZERO;
-            return number;
-        }
-        public override string ChangeSign()
-        {
-            if (number.Length > 0 && number != ZERO)
-            {
-                if (number[0] == '-')
-                {
-                    number = number.Substring(1);
-                }
-                else
-                {
-                    number = '-' + number;
-                }
-            }
-
-            return number;
-        }
         public override string Edit(int commandIndex)
         {
             switch (commandIndex)

@@ -18,7 +18,10 @@ namespace NumeralSystemConverter.TNumbers
         private int errorLength;
 
 
-        public TPNumber() { }
+        public TPNumber() : this (0)
+        {
+
+        }
         public TPNumber(double value) : this(value, DEFAULT_RADIX, DEFAULT_ERROR_LENGTH)
         {
 

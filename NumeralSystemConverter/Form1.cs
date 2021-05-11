@@ -15,8 +15,7 @@ namespace NumeralSystemConverter
 {
     public partial class Form1 : Form
     {
-        private Control control = new Control();
-        string clipboard = "";
+        private Control control = new Control(new PEditor());
         private int prevRadix = 10;
 
 
@@ -28,6 +27,8 @@ namespace NumeralSystemConverter
 
         private void Form1_Load(object sender, EventArgs e)
         {
+            числоСPССToolStripMenuItem_Click(null, null);
+
             sourceNumber.Text = control.Editor.Number;
             //Основание с.сч. исходного числа р1.
             sourceRadix.Value = 10;
@@ -48,7 +49,7 @@ namespace NumeralSystemConverter
         //Выполнить команду.
         private void DoCommand(int commandIndex)
         {
-            sourceNumber.Text = control.DoCommand(commandIndex, ref clipboard);
+            sourceNumber.Text = control.DoCommand(commandIndex);
         }
         //Обновляет состояние командных кнопок по основанию с. сч. исходного числа.
         private void UpdateButtons()
@@ -79,13 +80,16 @@ namespace NumeralSystemConverter
             prevRadix = Convert.ToInt32(sourceRadix.Value);
             control.Editor.Number = sourceNumber.Text;
             control.Radix = (int)sourceRadix.Value;
-            if (control.Editor.state == PEditor.State.Choose || control.Editor.state == PEditor.State.EditRight || control.Editor.state == PEditor.State.Print)
+            if (control.Editor.state == AEditor.State.Choose || control.Editor.state == AEditor.State.EditRight || control.Editor.state == AEditor.State.Print)
             {
                 control.processor.RightOperand = new TPNumber(sourceNumber.Text, control.Radix.ToString(), control.processor.RightOperand.ErrorLengthString);
             }
             else
             {
-                control.processor.LeftOperand = new TPNumber(sourceNumber.Text, control.Radix.ToString(), control.processor.LeftOperand.ErrorLengthString);
+                if (control.processor.LeftOperand != null)
+                {
+                    control.processor.LeftOperand = new TPNumber(sourceNumber.Text, control.Radix.ToString(), control.processor.LeftOperand.ErrorLengthString);
+                }
             }
             //Обновить состояние командных кнопок.
             this.UpdateP1();
@@ -132,18 +136,34 @@ namespace NumeralSystemConverter
         //Пункты меню Вид.
         private void числоСPССToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            control = new Control(new PEditor());
+            prevRadix = 10;
+            sourceNumber.Text = "0";
+            control.processor.LeftOperand = new TPNumber(0, 10, 0);
+            control.processor.RightOperand = new TPNumber(0, 10, 0);
+
             SetPSetVisible(true);
             SetFSetVisible(false);
             SetCSetVisible(false);
         }
         private void деситичнаяДробьToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            control = new Control(new FEditor());
+            sourceNumber.Text = "0";
+            control.processor.LeftOperand = new TFractNumber();
+            control.processor.RightOperand = new TFractNumber();
+
             SetPSetVisible(false);
             SetFSetVisible(true);
             SetCSetVisible(false);
         }
         private void комплексноеЧислоToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            control = new Control(new CEditor());
+            sourceNumber.Text = "0";
+            control.processor.LeftOperand = new TCompNumber();
+            control.processor.RightOperand = new TCompNumber();
+
             SetPSetVisible(false);
             SetFSetVisible(false);
             SetCSetVisible(true);
@@ -161,6 +181,16 @@ namespace NumeralSystemConverter
         private void SetCSetVisible(bool isVisible)
         {
             button34.Visible = isVisible;
+            button35.Visible = isVisible;
+
+            if (isVisible)
+            {
+                button27.Text = "^2";
+            }
+            else
+            {
+                button27.Text = "√";
+            }
         }
         private void Set16NumericSystemButtonsVisible(bool isVisible)
         {
@@ -170,6 +200,8 @@ namespace NumeralSystemConverter
             button14.Visible = isVisible;
             button15.Visible = isVisible;
             button16.Visible = isVisible;
+
+            button20.Visible = isVisible;
         }
         //Обработка алфавитно-цифровых клавиш.
         private void Form1_KeyPress(object sender, KeyPressEventArgs e)
@@ -185,6 +217,8 @@ namespace NumeralSystemConverter
             if (e.KeyChar == '-') i = 22;
             if (e.KeyChar == '*') i = 23;
             if (e.KeyChar == '/') i = 24;
+            if (e.KeyChar == '_') i = 33;
+            if (e.KeyChar == 'i') i = 34;
             if (e.KeyChar == '=' || e.KeyChar == '\n' || e.KeyChar == '\r') i = 27;
             if ((i < control.Radix) || (i >= 16)) DoCommand(i);
         }
