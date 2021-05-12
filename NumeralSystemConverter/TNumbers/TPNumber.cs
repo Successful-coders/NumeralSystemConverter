@@ -32,7 +32,7 @@ namespace NumeralSystemConverter.TNumbers
                 return;
 
             this.radix = radix;
-            this.value = ConverterFrom10.Convert(value, radix, errorLength);
+            this.value = radix == DEFAULT_RADIX ? value.ToString() : ConverterFrom10.Convert(value, radix, errorLength);
             this.errorLength = errorLength;
         }
         public TPNumber(string value, string radix, string errorLength)

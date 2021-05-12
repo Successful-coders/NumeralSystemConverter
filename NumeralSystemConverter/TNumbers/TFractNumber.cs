@@ -77,9 +77,9 @@ namespace NumeralSystemConverter.TNumbers
         }
         public override TANumber Square()
         {
-            TPNumber numerator = new TPNumber(this.numerator.Square().ValueNumber,
+            TPNumber numerator = new TPNumber(this.numerator.ValueNumber * this.numerator.ValueNumber,
                 this.numerator.RadixNumber, this.numerator.ErrorLengthNumber);
-            TPNumber denominator = new TPNumber(this.denominator.Square().ValueNumber,
+            TPNumber denominator = new TPNumber(this.denominator.ValueNumber * this.denominator.ValueNumber,
                 this.denominator.RadixNumber, this.denominator.ErrorLengthNumber);
 
             return new TFractNumber(numerator, denominator);

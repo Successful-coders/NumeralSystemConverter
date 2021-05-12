@@ -154,8 +154,8 @@ namespace NumeralSystemConverter
             control.processor.RightOperand = new TFractNumber();
 
             SetPSetVisible(false);
-            SetFSetVisible(true);
             SetCSetVisible(false);
+            SetFSetVisible(true);
         }
         private void комплексноеЧислоToolStripMenuItem_Click(object sender, EventArgs e)
         {
@@ -177,6 +177,15 @@ namespace NumeralSystemConverter
         private void SetFSetVisible(bool isVisible)
         {
             button33.Visible = isVisible;
+
+            if (isVisible)
+            {
+                button27.Text = "^2";
+            }
+            else
+            {
+                button27.Text = "√";
+            }
         }
         private void SetCSetVisible(bool isVisible)
         {

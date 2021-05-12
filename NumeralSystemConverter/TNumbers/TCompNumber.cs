@@ -56,11 +56,11 @@ namespace NumeralSystemConverter.TNumbers
         }
         public override TANumber Divide(TANumber otherNumber)
         {
-            TPNumber realPart = new TPNumber((this.realPart.ValueNumber * this.imagePart.ValueNumber + (otherNumber as TCompNumber).realPart.ValueNumber * (otherNumber as TCompNumber).imagePart.ValueNumber) /
-                (this.imagePart.ValueNumber * this.imagePart.ValueNumber + (otherNumber as TCompNumber).imagePart.ValueNumber * (otherNumber as TCompNumber).imagePart.ValueNumber),
+            TPNumber realPart = new TPNumber(((this.realPart.ValueNumber * (otherNumber as TCompNumber).realPart.ValueNumber + this.imagePart.ValueNumber * (otherNumber as TCompNumber).imagePart.ValueNumber)) /
+                ((otherNumber as TCompNumber).realPart.ValueNumber * (otherNumber as TCompNumber).realPart.ValueNumber + (otherNumber as TCompNumber).imagePart.ValueNumber * (otherNumber as TCompNumber).imagePart.ValueNumber),
                 this.realPart.RadixNumber, this.realPart.ErrorLengthNumber);
-            TPNumber imagePart = new TPNumber((this.imagePart.ValueNumber * (otherNumber as TCompNumber).realPart.ValueNumber - this.realPart.ValueNumber * (otherNumber as TCompNumber).imagePart.ValueNumber) /
-                (this.imagePart.ValueNumber * this.imagePart.ValueNumber + (otherNumber as TCompNumber).imagePart.ValueNumber * (otherNumber as TCompNumber).imagePart.ValueNumber),
+            TPNumber imagePart = new TPNumber(((this.imagePart.ValueNumber * (otherNumber as TCompNumber).realPart.ValueNumber - this.realPart.ValueNumber * (otherNumber as TCompNumber).imagePart.ValueNumber)) /
+                ((otherNumber as TCompNumber).realPart.ValueNumber * (otherNumber as TCompNumber).realPart.ValueNumber + (otherNumber as TCompNumber).imagePart.ValueNumber * (otherNumber as TCompNumber).imagePart.ValueNumber),
                 this.imagePart.RadixNumber, this.imagePart.ErrorLengthNumber);
 
             return new TCompNumber(realPart, imagePart);
@@ -94,10 +94,10 @@ namespace NumeralSystemConverter.TNumbers
             set
             {
                 string[] stringValues = value.Split(new string[] { " + i*" }, StringSplitOptions.None);
-                realPart = new TPNumber(int.Parse(stringValues[0]));
+                realPart = new TPNumber(double.Parse(stringValues[0]));
                 if (stringValues.Length >= 2 && !string.IsNullOrEmpty(stringValues[1]))
                 {
-                    imagePart = new TPNumber(int.Parse(stringValues[1]));
+                    imagePart = new TPNumber(double.Parse(stringValues[1]));
                 }
                 else
                 {
