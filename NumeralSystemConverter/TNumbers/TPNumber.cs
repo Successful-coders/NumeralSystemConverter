@@ -56,8 +56,8 @@ namespace NumeralSystemConverter.TNumbers
             TPNumber result = new TPNumber();
 
             result.errorLength = otherNumber.ErrorLengthNumber + errorLength;
-            double sum = ConverterTo10.Convert(Convert.ToString(otherNumber.ValueNumber), otherNumber.RadixNumber) +
-                ConverterTo10.Convert(Convert.ToString(value), radix);
+            double sum = ConverterTo10.Convert(otherNumber.ValueString, otherNumber.RadixNumber) +
+                ConverterTo10.Convert(ValueString, radix);
             result.value = Convert.ToString(ConverterFrom10.Convert(sum, otherNumber.RadixNumber, result.errorLength));
             result.radix = otherNumber.RadixNumber;
             result.errorLength = Math.Max(otherNumber.ErrorLengthNumber, errorLength);
@@ -69,8 +69,8 @@ namespace NumeralSystemConverter.TNumbers
             TPNumber result = new TPNumber();
 
             result.errorLength = otherNumber.ErrorLengthNumber + errorLength;
-            result.value = Convert.ToString(ConverterFrom10.Convert(ConverterTo10.Convert(Convert.ToString(otherNumber.ValueNumber), otherNumber.RadixNumber) *
-                ConverterTo10.Convert(Convert.ToString(value), radix), otherNumber.RadixNumber, result.errorLength));
+            result.value = Convert.ToString(ConverterFrom10.Convert(ConverterTo10.Convert(otherNumber.ValueString, otherNumber.RadixNumber) *
+                ConverterTo10.Convert(ValueString, radix), otherNumber.RadixNumber, result.errorLength));
             result.radix = otherNumber.RadixNumber;
 
             return result;
@@ -80,8 +80,8 @@ namespace NumeralSystemConverter.TNumbers
             TPNumber result = new TPNumber();
 
             result.errorLength = otherNumber.ErrorLengthNumber + errorLength;
-            result.value = Convert.ToString(ConverterFrom10.Convert(ConverterTo10.Convert(Convert.ToString(value), radix) -
-                ConverterTo10.Convert(Convert.ToString(otherNumber.ValueNumber), otherNumber.RadixNumber), otherNumber.RadixNumber, result.errorLength));
+            result.value = Convert.ToString(ConverterFrom10.Convert(ConverterTo10.Convert(ValueString, radix) -
+                ConverterTo10.Convert(otherNumber.ValueString, otherNumber.RadixNumber), otherNumber.RadixNumber, result.errorLength));
             result.radix = otherNumber.RadixNumber;
             result.errorLength = Math.Max(otherNumber.ErrorLengthNumber, errorLength);
 
@@ -92,8 +92,8 @@ namespace NumeralSystemConverter.TNumbers
             TPNumber result = new TPNumber();
 
             result.errorLength = otherNumber.ErrorLengthNumber + errorLength;
-            result.value = Convert.ToString(ConverterFrom10.Convert(ConverterTo10.Convert(Convert.ToString(value), radix) /
-                ConverterTo10.Convert(Convert.ToString(otherNumber.ValueNumber), otherNumber.RadixNumber), otherNumber.RadixNumber, result.errorLength));
+            result.value = Convert.ToString(ConverterFrom10.Convert(ConverterTo10.Convert(ValueString, radix) /
+                ConverterTo10.Convert(otherNumber.ValueString, otherNumber.RadixNumber), otherNumber.RadixNumber, result.errorLength));
             result.radix = otherNumber.RadixNumber;
 
             return result;
